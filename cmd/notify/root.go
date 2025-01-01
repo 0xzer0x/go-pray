@@ -26,7 +26,7 @@ var NotifyCmd = &cobra.Command{
 }
 
 func runNotify(cmd *cobra.Command, ars []string) {
-	err := util.SendNotification("Started in daemon mode", "")
+	err := util.SendNotification("Started in notify mode", "bell")
 	if err != nil {
 		util.ErrExit("failed to send notification: %v", err)
 	}
@@ -37,10 +37,17 @@ func runNotify(cmd *cobra.Command, ars []string) {
 	}
 
 	for {
+		if nxt := prayerTimes.NextPrayerNow(); nxt == calc.NO_PRAYER {
+			prayerTimes, err = praytimes.DatePrayerTimes(time.Now().UTC().AddDate(0, 0, 1))
+			if err != nil {
+				util.ErrExit("%v", err)
+			}
+		}
+
 		nextPrayer := prayerTimes.NextPrayerNow()
 		nextName := praytimes.PrayerName(nextPrayer)
-		fmt.Printf("next prayer: %v\nstarting timer...\n", strings.ToLower(nextName))
 
+		fmt.Printf("next prayer: %s\nstarting timer...\n", strings.ToLower(nextName))
 		timeRemaining := prayerTimes.TimeForPrayer(nextPrayer).Sub(time.Now().UTC())
 		notifyTimer := time.NewTimer(timeRemaining)
 
@@ -50,11 +57,5 @@ func runNotify(cmd *cobra.Command, ars []string) {
 			util.ErrExit("%v", err)
 		}
 
-		if nextPrayer == calc.NO_PRAYER {
-			prayerTimes, err = praytimes.CurrentPrayerTimes()
-			if err != nil {
-				util.ErrExit("%v", err)
-			}
-		}
 	}
 }
