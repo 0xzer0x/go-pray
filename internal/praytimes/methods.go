@@ -8,7 +8,6 @@ import (
 )
 
 var methods = map[string]calc.CalculationMethod{
-	"OTHER":     calc.OTHER,
 	"MWL":       calc.MUSLIM_WORLD_LEAGUE,
 	"EGYPT":     calc.EGYPTIAN,
 	"KARACHI":   calc.KARACHI,
@@ -30,7 +29,7 @@ func CalculationMethod(name string) (calc.CalculationMethod, error) {
 		methodNames = append(methodNames, k)
 	}
 	return 0, fmt.Errorf(
-		"invalid method: %s. valid methods are: %s",
+		"invalid method '%s', valid methods are: %s",
 		name,
 		strings.Join(methodNames, ", "),
 	)
