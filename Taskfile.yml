@@ -1,0 +1,12 @@
+version: 3
+vars:
+  INSTALL_DIR: $HOME/.local/bin
+tasks:
+  clean:
+    cmd: go clean
+  build:
+    cmd: go build
+  install:
+    deps:
+      - build
+    cmd: mv {{ .TASKFILE_DIR }}/go-pray {{ .INSTALL_DIR }}/go-pray
