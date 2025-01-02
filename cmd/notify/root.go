@@ -26,7 +26,7 @@ var NotifyCmd = &cobra.Command{
 }
 
 func runNotify(cmd *cobra.Command, ars []string) {
-	err := util.SendNotification("Started in notify mode", "bell")
+	err := util.SendNotification("bell", "Started in notify mode")
 	if err != nil {
 		util.ErrExit("failed to send notification: %v", err)
 	}
@@ -52,7 +52,7 @@ func runNotify(cmd *cobra.Command, ars []string) {
 		notifyTimer := time.NewTimer(timeRemaining)
 
 		<-notifyTimer.C
-		err = util.SendNotification("Time for "+nextName+" prayer 🕌", "clock-applet-symbolic")
+		err = util.SendNotification("clock-applet-symbolic", "Time for "+nextName+" prayer 🕌")
 		if err != nil {
 			util.ErrExit("%v", err)
 		}
