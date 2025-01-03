@@ -8,6 +8,7 @@ import (
 	"github.com/mnadev/adhango/pkg/calc"
 	"github.com/spf13/cobra"
 
+	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/config"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
@@ -45,7 +46,7 @@ func runNotify(cmd *cobra.Command, ars []string) {
 		}
 
 		nextPrayer := prayerTimes.NextPrayerNow()
-		nextName := util.PrayerName(nextPrayer, true)
+		nextName := common.CalendarName(*prayerTimes, nextPrayer)
 
 		fmt.Printf("next prayer: %s\nstarting timer...\n", strings.ToLower(nextName))
 		timeRemaining := prayerTimes.TimeForPrayer(nextPrayer).Sub(time.Now().UTC())

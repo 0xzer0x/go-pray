@@ -6,7 +6,7 @@ import (
 
 	"github.com/mnadev/adhango/pkg/calc"
 
-	"github.com/0xzer0x/go-pray/internal/util"
+	"github.com/0xzer0x/go-pray/internal/common"
 )
 
 type TextFormatStrategy struct{}
@@ -23,7 +23,7 @@ func (f *TextFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
 	} {
 		output += fmt.Sprintf(
 			"%-8s%7v\n",
-			util.PrayerName(prayer, true)+":",
+			common.CalendarName(calendar, prayer)+":",
 			calendar.TimeForPrayer(prayer).Format(time.Kitchen),
 		)
 	}
@@ -35,7 +35,7 @@ func (f *TextFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Praye
 	timeRemaining := time.Until(prayTime)
 
 	return fmt.Sprintf("%s in %02d:%02d",
-		util.PrayerName(prayer, true),
+		common.CalendarName(calendar, prayer),
 		int(timeRemaining.Hours()),
 		int(timeRemaining.Minutes())%60,
 	)

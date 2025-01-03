@@ -6,13 +6,14 @@ import (
 
 	"github.com/mnadev/adhango/pkg/calc"
 
+	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 type prayerInfo struct {
-	Name      string
-	Time      string
-	Remaining string
+	Name      string `json:"name"`
+	Time      string `json:"time"`
+	Remaining string `json:"remaining"`
 }
 
 type calendarInfo struct {
@@ -29,7 +30,7 @@ type JsonFormatStrategy struct{}
 func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	prayerTime := calendar.TimeForPrayer(prayer)
 	prayerInf := prayerInfo{
-		Name:      util.PrayerName(prayer, false),
+		Name:      common.PrayerName(prayer),
 		Time:      prayerTime.Format(time.TimeOnly),
 		Remaining: time.Until(prayerTime).Truncate(time.Second).String(),
 	}
