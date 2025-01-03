@@ -1,5 +1,6 @@
 method: EGYPT
 timezone: Africa/Cairo
+adhan: $HOME/.local/share/qatami_takbeer.mp3
 location:
   lat: 30.001780
   long: 31.290419

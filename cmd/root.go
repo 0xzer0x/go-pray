@@ -26,6 +26,7 @@ func registerGlobalFlags() {
 		"timezone": "calculation timezone",
 		"method":   "calculation method",
 		"format":   "output format",
+		"adhan":    "path to adhan mp3 to use",
 	} {
 		rootCmd.PersistentFlags().String(name, "", usage)
 		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
