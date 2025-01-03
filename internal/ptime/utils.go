@@ -55,3 +55,32 @@ func CurrentPrayerTimes() (*calc.PrayerTimes, error) {
 	}
 	return prayerTimes, nil
 }
+
+func NextTime(prayer calc.Prayer) (calc.PrayerTimes, time.Time, error) {
+	prayerTimes, err := CurrentPrayerTimes()
+	if now := time.Now(); err == nil && !now.Before(prayerTimes.TimeForPrayer(prayer)) {
+		prayerTimes, err = DatePrayerTimes(now.AddDate(0, 0, 1))
+	}
+
+	if err != nil {
+		return calc.PrayerTimes{}, time.Time{}, err
+	}
+
+	return *prayerTimes, prayerTimes.TimeForPrayer(prayer), nil
+}
+
+func NextPrayer() (calc.PrayerTimes, calc.Prayer, error) {
+	var err error
+	var prayerTimes *calc.PrayerTimes
+	nextPrayer := calc.NO_PRAYER
+	date := time.Now()
+	for prayerTimes, err = DatePrayerTimes(date); err == nil && nextPrayer == calc.NO_PRAYER; date = date.AddDate(0, 0, 1) {
+		prayerTimes, err = DatePrayerTimes(date)
+		nextPrayer = prayerTimes.NextPrayerNow()
+	}
+
+	if err != nil {
+		return calc.PrayerTimes{}, calc.NO_PRAYER, err
+	}
+	return *prayerTimes, nextPrayer, nil
+}
