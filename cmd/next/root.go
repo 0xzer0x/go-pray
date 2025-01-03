@@ -8,7 +8,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/config"
-	"github.com/0xzer0x/go-pray/internal/praytimes"
+	"github.com/0xzer0x/go-pray/internal/pfmt"
+	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
@@ -21,11 +22,11 @@ var NextCommand = &cobra.Command{
 			util.ErrExit("%v", err)
 		}
 	},
-	Run: runNext,
+	Run: nextCmd,
 }
 
-func runNext(cmd *cobra.Command, args []string) {
-	prayerTimes, err := praytimes.CurrentPrayerTimes()
+func nextCmd(cmd *cobra.Command, args []string) {
+	prayerTimes, err := ptime.CurrentPrayerTimes()
 	if err != nil {
 		util.ErrExit("failed to calculate prayer times: %v", err)
 	}
@@ -42,20 +43,16 @@ func runNext(cmd *cobra.Command, args []string) {
 			0,
 			time.UTC,
 		).AddDate(0, 0, 1)
-		prayerTimes, err = praytimes.DatePrayerTimes(nextDay)
+		prayerTimes, err = ptime.DatePrayerTimes(nextDay)
 		if err != nil {
 			util.ErrExit("failed to calculate prayer times: %v", err)
 		}
 	}
 
-	nextTime := prayerTimes.TimeForPrayer(nextPrayer)
-	nextName := praytimes.PrayerName(nextPrayer)
-	timeRemaining := nextTime.Sub(time.Now().UTC())
+	formatter := pfmt.NewPrayerTimesFormatterBuilder().
+		SetCalendar(*prayerTimes).
+		SetStrategy(config.FormatStrategy()).
+		Build()
 
-	fmt.Printf(
-		"%s in %02d:%02d\n",
-		nextName,
-		int(timeRemaining.Hours()),
-		int(timeRemaining.Minutes())%60,
-	)
+	fmt.Println(formatter.Prayer(nextPrayer))
 }

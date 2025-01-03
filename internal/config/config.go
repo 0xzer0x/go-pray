@@ -15,7 +15,6 @@ func Initialize() {
 		viper.AddConfigPath("$XDG_CONFIG_HOME/go-pray")
 		viper.AddConfigPath("$HOME/.config/go-pray")
 		viper.AddConfigPath("$HOME/.go-pray")
-		viper.AddConfigPath(".")
 	}
 
 	viper.AutomaticEnv()

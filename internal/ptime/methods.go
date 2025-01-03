@@ -1,4 +1,4 @@
-package praytimes
+package ptime
 
 import (
 	"fmt"

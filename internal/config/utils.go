@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 
+	"github.com/0xzer0x/go-pray/internal/pfmt"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
@@ -13,7 +14,7 @@ func MissingKeyError(key string) error {
 	return errors.New("missing key: " + key)
 }
 
-func ValidateSet(key string) {
+func ValidateKey(key string) {
 	if !viper.IsSet(key) {
 		util.ErrExit("%s is not set, use config file or command-line flags to set it.", key)
 	}
@@ -29,4 +30,14 @@ func ValidateCalculationParams() error {
 		}
 	}
 	return nil
+}
+
+func FormatStrategy() pfmt.FormatStrategy {
+	value := viper.GetString("format")
+	switch value {
+	case "json":
+		return &pfmt.JsonFormatStrategy{}
+	default:
+		return &pfmt.TextFormatStrategy{}
+	}
 }

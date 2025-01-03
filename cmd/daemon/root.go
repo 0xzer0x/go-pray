@@ -1,4 +1,4 @@
-package notify
+package daemon
 
 import (
 	"fmt"
@@ -9,12 +9,12 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/config"
-	"github.com/0xzer0x/go-pray/internal/praytimes"
+	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
-var NotifyCmd = &cobra.Command{
-	Use:   "notify",
+var DaemonCmd = &cobra.Command{
+	Use:   "daemon",
 	Short: "Start the go-pray daemon to send desktop notifications at prayer times",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		err := config.ValidateCalculationParams()
@@ -26,26 +26,26 @@ var NotifyCmd = &cobra.Command{
 }
 
 func runNotify(cmd *cobra.Command, ars []string) {
-	err := util.SendNotification("bell", "Started in notify mode")
+	err := util.SendNotification("bell", "Started in daemon mode")
 	if err != nil {
 		util.ErrExit("failed to send notification: %v", err)
 	}
 
-	prayerTimes, err := praytimes.CurrentPrayerTimes()
+	prayerTimes, err := ptime.CurrentPrayerTimes()
 	if err != nil {
 		util.ErrExit("%v", err)
 	}
 
 	for {
 		if nxt := prayerTimes.NextPrayerNow(); nxt == calc.NO_PRAYER {
-			prayerTimes, err = praytimes.DatePrayerTimes(time.Now().UTC().AddDate(0, 0, 1))
+			prayerTimes, err = ptime.DatePrayerTimes(time.Now().UTC().AddDate(0, 0, 1))
 			if err != nil {
 				util.ErrExit("%v", err)
 			}
 		}
 
 		nextPrayer := prayerTimes.NextPrayerNow()
-		nextName := praytimes.PrayerName(nextPrayer)
+		nextName := util.PrayerName(nextPrayer, true)
 
 		fmt.Printf("next prayer: %s\nstarting timer...\n", strings.ToLower(nextName))
 		timeRemaining := prayerTimes.TimeForPrayer(nextPrayer).Sub(time.Now().UTC())

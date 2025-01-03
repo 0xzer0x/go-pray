@@ -1,10 +1,13 @@
 package calendar
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/config"
-	"github.com/0xzer0x/go-pray/internal/praytimes"
+	"github.com/0xzer0x/go-pray/internal/pfmt"
+	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
@@ -22,10 +25,14 @@ var todayCmd = &cobra.Command{
 }
 
 func calendarTodayCmd(cmd *cobra.Command, args []string) {
-	prayerTimes, err := praytimes.CurrentPrayerTimes()
+	prayerTimes, err := ptime.CurrentPrayerTimes()
 	if err != nil {
 		util.ErrExit("failed to calculate prayer times: %v", err)
 	}
 
-	praytimes.PrintCalendar(prayerTimes)
+	formatter := pfmt.NewPrayerTimesFormatterBuilder().
+		SetCalendar(*prayerTimes).
+		SetStrategy(config.FormatStrategy()).
+		Build()
+	fmt.Print(formatter.Calendar())
 }
