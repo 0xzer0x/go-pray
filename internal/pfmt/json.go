@@ -17,12 +17,8 @@ type prayerInfo struct {
 }
 
 type calendarInfo struct {
-	Fajr    prayerInfo `json:"fajr"`
-	Sunrise prayerInfo `json:"sunrise"`
-	Dhuhr   prayerInfo `json:"dhuhr"`
-	Asr     prayerInfo `json:"asr"`
-	Maghrib prayerInfo `json:"maghrib"`
-	Isha    prayerInfo `json:"isha"`
+	Date    string       `json:"date"`
+	Prayers []prayerInfo `json:"prayers"`
 }
 
 type JsonFormatStrategy struct{}
@@ -39,12 +35,15 @@ func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 
 func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
 	pt := calendarInfo{
-		Fajr:    newPrayerInfo(calendar, calc.FAJR),
-		Sunrise: newPrayerInfo(calendar, calc.SUNRISE),
-		Dhuhr:   newPrayerInfo(calendar, calc.DHUHR),
-		Asr:     newPrayerInfo(calendar, calc.ASR),
-		Maghrib: newPrayerInfo(calendar, calc.MAGHRIB),
-		Isha:    newPrayerInfo(calendar, calc.ISHA),
+		Date: calendar.Fajr.Format(time.DateOnly),
+		Prayers: []prayerInfo{
+			newPrayerInfo(calendar, calc.FAJR),
+			newPrayerInfo(calendar, calc.SUNRISE),
+			newPrayerInfo(calendar, calc.DHUHR),
+			newPrayerInfo(calendar, calc.ASR),
+			newPrayerInfo(calendar, calc.MAGHRIB),
+			newPrayerInfo(calendar, calc.ISHA),
+		},
 	}
 
 	marshaled, err := json.Marshal(pt)
