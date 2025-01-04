@@ -2,7 +2,7 @@
 
 ## Overview ⚡
 
-Powerful and user-friendly command-line interface (CLI) application that helps Muslims stay on top of their daily prayers. With features like prayer time notifications, prayer calendars, and flexible configuration options, go-pray ensures that you never miss a prayer. 🕌
+Powerful and user-friendly command-line interface (CLI) application that helps Muslims stay on top of their daily prayers. With features like prayer time notifications, prayer calendars, and flexible configuration options. 🕌
 
 ### Features
 
