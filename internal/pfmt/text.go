@@ -13,6 +13,7 @@ type TextFormatStrategy struct{}
 
 func (f *TextFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
 	var output string
+	output = fmt.Sprintf("-- Date: %s --\n", calendar.Fajr.Format("Jan 02, 2006"))
 	for _, prayer := range []calc.Prayer{
 		calc.FAJR,
 		calc.SUNRISE,
@@ -22,7 +23,7 @@ func (f *TextFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
 		calc.ISHA,
 	} {
 		output += fmt.Sprintf(
-			"%-8s%7v\n",
+			"%-17s%7v\n",
 			common.CalendarName(calendar, prayer)+":",
 			calendar.TimeForPrayer(prayer).Format(time.Kitchen),
 		)

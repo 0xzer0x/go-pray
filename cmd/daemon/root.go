@@ -54,8 +54,9 @@ func daemonCmd(cmd *cobra.Command, ars []string) {
 		nextPrayer := prayerTimes.NextPrayerNow()
 		nextName := common.CalendarName(*prayerTimes, nextPrayer)
 
-		fmt.Printf("next prayer: %s\nstarting timer...\n", strings.ToLower(nextName))
-		timeRemaining := prayerTimes.TimeForPrayer(nextPrayer).Sub(time.Now().UTC())
+		fmt.Printf("next prayer: %s\n", strings.ToLower(nextName))
+		timeRemaining := time.Until(prayerTimes.TimeForPrayer(nextPrayer))
+		fmt.Printf("time remaining: %s\n", timeRemaining.String())
 		notifyTimer := time.NewTimer(timeRemaining)
 		notifyChan := make(chan notify.Result)
 
