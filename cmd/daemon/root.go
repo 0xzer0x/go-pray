@@ -61,6 +61,7 @@ func daemonCmd(cmd *cobra.Command, ars []string) {
 		notifyChan := make(chan notify.Result)
 
 		<-notifyTimer.C
+		fmt.Println("sending prayer notification")
 		go notify.SendInteractive(
 			notifyChan,
 			"clock-applet-symbolic",
