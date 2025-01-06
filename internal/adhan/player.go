@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"time"
 
-	beep "github.com/gopxl/beep/v2"
+	"github.com/gopxl/beep/v2"
 	"github.com/gopxl/beep/v2/mp3"
 	"github.com/gopxl/beep/v2/speaker"
 	"github.com/spf13/viper"
