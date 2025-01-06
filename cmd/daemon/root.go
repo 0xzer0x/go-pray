@@ -16,6 +16,8 @@ import (
 	"github.com/0xzer0x/go-pray/internal/util"
 )
 
+var player *adhan.Player = adhan.NewPlayer()
+
 var DaemonCmd = &cobra.Command{
 	Use:   "daemon",
 	Short: "Start the go-pray daemon to send desktop notifications at prayer times",
@@ -30,15 +32,13 @@ var DaemonCmd = &cobra.Command{
 	Run: daemonCmd,
 }
 
-func notifyPrayer(
-	player *adhan.Player,
-	calendar *calc.PrayerTimes,
-	prayer calc.Prayer,
-	fromNow time.Duration,
-) {
-	timer := time.NewTimer(fromNow)
-	name := common.CalendarName(*calendar, prayer)
+func notifyPrayer(calendar *calc.PrayerTimes, prayer calc.Prayer) {
 	notifyChan := make(chan notify.Result)
+	name := common.CalendarName(*calendar, prayer)
+	prayerTime := calendar.TimeForPrayer(prayer)
+
+	log.Printf("creating new timer: %s - time: %s\n", name, prayerTime.Format(time.DateTime))
+	timer := time.NewTimer(time.Until(prayerTime))
 
 	<-timer.C
 	log.Printf("notification timer finished: %s\n", name)
@@ -64,7 +64,6 @@ func notifyPrayer(
 func daemonCmd(cmd *cobra.Command, ars []string) {
 	log.Println("starting in daemon mode")
 
-	player := adhan.NewPlayer()
 	if err := player.Initialize(); err != nil {
 		util.ErrExit("%v", err)
 	}
@@ -80,23 +79,16 @@ func daemonCmd(cmd *cobra.Command, ars []string) {
 
 		// INFO: create a WaitGroup for the prayers in the calendar with a future date
 		var wg sync.WaitGroup
-		for name, prayer := range common.Prayers {
+		for _, prayer := range common.Prayers {
 			if prayer == calc.SUNRISE {
 				continue
 			}
 
-			remainingForPrayer := time.Until(prayerTimes.TimeForPrayer(prayer))
-			if remainingForPrayer > 0 {
-				log.Printf(
-					"creating prayer timer: %s - remaining: %s\n",
-					name,
-					remainingForPrayer.Truncate(time.Second).String(),
-				)
-
+			if time.Now().Before(prayerTimes.TimeForPrayer(prayer)) {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					notifyPrayer(player, &prayerTimes, prayer, remainingForPrayer)
+					notifyPrayer(&prayerTimes, prayer)
 				}()
 			}
 		}
