@@ -13,9 +13,9 @@ import (
 )
 
 type Player struct {
-	streamer beep.StreamSeekCloser
-	format   beep.Format
-	isInit   bool
+	buffer beep.Buffer
+	format beep.Format
+	isInit bool
 }
 
 func NewPlayer() *Player {
@@ -33,10 +33,12 @@ func (a *Player) Initialize() error {
 		return fmt.Errorf("failed to open MP3 file: %w", err)
 	}
 
-	a.streamer, a.format, err = mp3.Decode(f)
+	var streamer beep.StreamSeekCloser
+	streamer, a.format, err = mp3.Decode(f)
 	if err != nil {
 		return fmt.Errorf("failed to decode MP3: %w", err)
 	}
+	defer streamer.Close()
 
 	if !a.isInit {
 		err = speaker.Init(a.format.SampleRate, a.format.SampleRate.N(time.Second/10))
@@ -46,24 +48,23 @@ func (a *Player) Initialize() error {
 		a.isInit = true
 	}
 
+	a.buffer = *beep.NewBuffer(a.format)
+	a.buffer.Append(streamer)
+
 	return nil
-}
-
-func (a *Player) Duration() time.Duration {
-	return a.format.SampleRate.D(a.streamer.Len())
-}
-
-func (a *Player) Stop() {
-	speaker.Clear()
 }
 
 func (a *Player) Play() error {
 	speaker.Clear()
-
-	if err := a.streamer.Seek(0); err != nil {
-		return fmt.Errorf("failed to seek to adhan start: %w", err)
-	}
-
-	speaker.Play(a.streamer)
+	streamer := a.buffer.Streamer(0, a.buffer.Len())
+	speaker.Play(streamer)
 	return nil
+}
+
+func (a *Player) Duration() time.Duration {
+	return a.format.SampleRate.D(a.buffer.Len())
+}
+
+func (a *Player) Stop() {
+	speaker.Clear()
 }
