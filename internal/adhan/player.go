@@ -13,9 +13,9 @@ import (
 )
 
 type Player struct {
-	buffer beep.Buffer
-	format beep.Format
-	isInit bool
+	buffer      beep.Buffer
+	format      beep.Format
+	initialized bool
 }
 
 func NewPlayer() *Player {
@@ -40,14 +40,6 @@ func (a *Player) Initialize() error {
 	}
 	defer streamer.Close()
 
-	if !a.isInit {
-		err = speaker.Init(a.format.SampleRate, a.format.SampleRate.N(time.Second/10))
-		if err != nil {
-			return fmt.Errorf("failed to initialize speaker: %w", err)
-		}
-		a.isInit = true
-	}
-
 	a.buffer = *beep.NewBuffer(a.format)
 	a.buffer.Append(streamer)
 
@@ -55,6 +47,14 @@ func (a *Player) Initialize() error {
 }
 
 func (a *Player) Play() error {
+	if !a.initialized {
+		err := speaker.Init(a.format.SampleRate, a.format.SampleRate.N(time.Second/10))
+		if err != nil {
+			return fmt.Errorf("failed to initialize speaker: %w", err)
+		}
+		a.initialized = true
+	}
+
 	speaker.Clear()
 	streamer := a.buffer.Streamer(0, a.buffer.Len())
 	speaker.Play(streamer)
