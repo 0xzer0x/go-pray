@@ -19,17 +19,19 @@ import (
 var player *adhan.Player = adhan.NewPlayer()
 
 var DaemonCmd = &cobra.Command{
-	Use:   "daemon",
-	Short: "Start the go-pray daemon to send desktop notifications at prayer times",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		var err error
-		err = config.ValidateCalculationParams()
-		err = config.ValidateKey("adhan")
-		if err != nil {
-			util.ErrExit("%v", err)
-		}
-	},
-	Run: daemonCmd,
+	Use:    "daemon",
+	Short:  "Start the go-pray daemon to send desktop notifications at prayer times",
+	PreRun: validateDaemonArgs,
+	Run:    execDaemon,
+}
+
+func validateDaemonArgs(cmd *cobra.Command, args []string) {
+	var err error
+	err = config.ValidateCalculationParams()
+	err = config.ValidateKey("adhan")
+	if err != nil {
+		util.ErrExit("%v", err)
+	}
 }
 
 func notifyPrayer(calendar *calc.PrayerTimes, prayer calc.Prayer) {
@@ -61,7 +63,7 @@ func notifyPrayer(calendar *calc.PrayerTimes, prayer calc.Prayer) {
 	}
 }
 
-func daemonCmd(cmd *cobra.Command, ars []string) {
+func execDaemon(cmd *cobra.Command, ars []string) {
 	log.Println("starting in daemon mode")
 
 	if err := player.Initialize(); err != nil {

@@ -20,11 +20,11 @@ var NextCommand = &cobra.Command{
 	Use:    "next [prayer]",
 	Short:  "Get the next prayer time or the next occurrence of a specific prayer",
 	Args:   cobra.MaximumNArgs(1),
-	PreRun: nextCmdValidations,
-	Run:    nextCmd,
+	PreRun: validateNextArgs,
+	Run:    execNext,
 }
 
-func nextCmdValidations(cmd *cobra.Command, args []string) {
+func validateNextArgs(cmd *cobra.Command, args []string) {
 	err := config.ValidateCalculationParams()
 	if err != nil {
 		util.ErrExit("%v", err)
@@ -49,7 +49,7 @@ func nextCmdValidations(cmd *cobra.Command, args []string) {
 	}
 }
 
-func nextCmd(cmd *cobra.Command, args []string) {
+func execNext(cmd *cobra.Command, args []string) {
 	var prayerTimes calc.PrayerTimes
 	var nextPrayer calc.Prayer
 	var err error

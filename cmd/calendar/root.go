@@ -21,17 +21,11 @@ var specialDates = map[string]time.Time{
 }
 
 var CalendarCmd = &cobra.Command{
-	Use:   "calendar [date...]",
-	Short: "Get prayer times calendar for a specific date",
-	Long:  `Get prayer times calendar for specific date`,
-	PreRun: func(cmd *cobra.Command, args []string) {
-		validateDate(args)
-		err := config.ValidateCalculationParams()
-		if err != nil {
-			util.ErrExit("%v", err)
-		}
-	},
-	Run: calendarCmd,
+	Use:    "calendar [date...]",
+	Short:  "Get prayer times calendar for a specific date",
+	Long:   `Get prayer times calendar for specific date`,
+	PreRun: validateCalendarArgs,
+	Run:    execCalendar,
 }
 
 func validateDate(args []string) {
@@ -49,7 +43,15 @@ func validateDate(args []string) {
 	}
 }
 
-func calendarCmd(cmd *cobra.Command, args []string) {
+func validateCalendarArgs(cmd *cobra.Command, args []string) {
+	validateDate(args)
+	err := config.ValidateCalculationParams()
+	if err != nil {
+		util.ErrExit("%v", err)
+	}
+}
+
+func execCalendar(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		args = append(args, "@today")
 	}
