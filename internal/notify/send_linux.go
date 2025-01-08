@@ -28,7 +28,7 @@ func Send(icon, body string, duration time.Duration) error {
 	return cmd.Run()
 }
 
-func SendInteractive(resChan chan Result, icon, body string, duration time.Duration) {
+func SendInteractive(resChan chan<- Result, icon, body string, duration time.Duration) {
 	defer close(resChan)
 	var err error
 	var notifyCmd string

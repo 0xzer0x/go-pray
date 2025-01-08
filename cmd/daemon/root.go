@@ -35,7 +35,7 @@ func validateDaemonArgs(cmd *cobra.Command, args []string) {
 }
 
 func notifyPrayer(calendar *calc.PrayerTimes, prayer calc.Prayer) {
-	notifyChan := make(chan notify.Result)
+	notifyChan := make(chan notify.Result, 1)
 	name := common.CalendarName(*calendar, prayer)
 	prayerTime := calendar.TimeForPrayer(prayer)
 
