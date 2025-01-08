@@ -9,7 +9,7 @@ tasks:
   clean:
     cmd: go clean
   build:
-    cmd: >
+    cmd: >-
       go build
       -ldflags="-X 'github.com/0xzer0x/go-pray/internal/version.version={{ .RELEASE_VERSION }}'
       -X 'github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .RELEASE_COMMIT }}'
