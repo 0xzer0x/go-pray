@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/util"
+	"github.com/0xzer0x/go-pray/internal/version"
 )
 
 var VersionCmd = &cobra.Command{
@@ -17,6 +18,24 @@ var VersionCmd = &cobra.Command{
 }
 
 func execVersion(cmd *cobra.Command, args []string) {
-	version, sum := util.Version()
-	fmt.Printf("version: %s (%s)\n", version, sum)
+	semver := version.Version()
+	commit := version.BuildCommit()
+	buildTime, err := version.BuildTime()
+	if err != nil {
+		util.ErrExit("failed to extract build time: %v", err)
+	}
+
+	fmt.Printf(
+		"%-15s%s\n%-15s%s\n%-15s%s\n%-15s%s\n%-15s%s\n",
+		"Version:",
+		semver,
+		"Go Version:",
+		version.Runtime(),
+		"Git Commit:",
+		commit,
+		"Built:",
+		buildTime.Format("Mon Jan 02 15:04:05 2006"),
+		"OS/Arch:",
+		version.OsArch(),
+	)
 }
