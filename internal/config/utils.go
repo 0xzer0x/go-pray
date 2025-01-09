@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/0xzer0x/go-pray/internal/pfmt"
+	"github.com/0xzer0x/go-pray/internal/format"
 )
 
 func MissingKeyError(key string) error {
@@ -32,12 +32,12 @@ func ValidateCalculationParams() error {
 	return nil
 }
 
-func FormatStrategy() pfmt.FormatStrategy {
+func FormatStrategy() format.FormatStrategy {
 	value := viper.GetString("format")
 	switch value {
 	case "json":
-		return &pfmt.JsonFormatStrategy{}
+		return &format.JsonFormatStrategy{}
 	default:
-		return &pfmt.TextFormatStrategy{}
+		return &format.TextFormatStrategy{}
 	}
 }

@@ -9,7 +9,6 @@ import (
 
 	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/config"
-	"github.com/0xzer0x/go-pray/internal/pfmt"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
@@ -65,10 +64,11 @@ func execNext(cmd *cobra.Command, args []string) {
 		util.ErrExit("failed to calculate next prayer time: %v", err)
 	}
 
-	formatter := pfmt.NewPrayerTimesFormatterBuilder().
-		SetCalendar(prayerTimes).
-		SetStrategy(config.FormatStrategy()).
-		Build()
+	formatStrategy := config.FormatStrategy()
+	output, err := formatStrategy.Prayer(prayerTimes, nextPrayer)
+	if err != nil {
+		util.ErrExit("%v", err)
+	}
 
-	fmt.Println(formatter.Prayer(nextPrayer))
+	fmt.Print(output)
 }

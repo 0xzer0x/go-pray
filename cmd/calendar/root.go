@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/config"
-	"github.com/0xzer0x/go-pray/internal/pfmt"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
@@ -55,6 +54,8 @@ func execCalendar(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		args = append(args, "@today")
 	}
+
+	formatStrategy := config.FormatStrategy()
 	for _, date := range args {
 		var calendarDate time.Time
 		if specialTime, ok := specialDates[date]; ok {
@@ -68,11 +69,11 @@ func execCalendar(cmd *cobra.Command, args []string) {
 			util.ErrExit("failed to calculate prayer times: %v", err)
 		}
 
-		formatter := pfmt.NewPrayerTimesFormatterBuilder().
-			SetCalendar(*prayerTimes).
-			SetStrategy(config.FormatStrategy()).
-			Build()
+		output, err := formatStrategy.Calendar(*prayerTimes)
+		if err != nil {
+			util.ErrExit("%v", err)
+		}
 
-		fmt.Print(formatter.Calendar())
+		fmt.Print(output)
 	}
 }

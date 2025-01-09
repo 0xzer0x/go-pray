@@ -1,13 +1,14 @@
-package pfmt
+package format
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/mnadev/adhango/pkg/calc"
 
 	"github.com/0xzer0x/go-pray/internal/common"
-	"github.com/0xzer0x/go-pray/internal/util"
+	"github.com/0xzer0x/go-pray/internal/version"
 )
 
 type prayerInfo struct {
@@ -33,7 +34,7 @@ func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	return prayerInf
 }
 
-func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
+func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) (string, error) {
 	pt := calendarInfo{
 		Date: calendar.Fajr.Format(time.DateOnly),
 		Prayers: []prayerInfo{
@@ -48,17 +49,25 @@ func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) string {
 
 	marshaled, err := json.Marshal(pt)
 	if err != nil {
-		util.ErrExit("failed to marshal prayers calendar: %v", err)
+		return "", fmt.Errorf("failed to marshal prayers calendar: %v", err)
 	}
 
-	return string(marshaled)
+	return string(marshaled), nil
 }
 
-func (f *JsonFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) string {
+func (f *JsonFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
 	prayerInf := newPrayerInfo(calendar, prayer)
 	marshaled, err := json.Marshal(prayerInf)
 	if err != nil {
-		util.ErrExit("failed to marshal prayer info: %v", err)
+		return "", fmt.Errorf("failed to marshal prayer info: %v", err)
 	}
-	return string(marshaled)
+	return string(marshaled), nil
+}
+
+func (f *JsonFormatStrategy) VersionInfo(versionInfo version.VersionInfo) (string, error) {
+	marshaled, err := json.Marshal(versionInfo)
+	if err != nil {
+		return "", fmt.Errorf("failed to marshal version info: %v", err)
+	}
+	return string(marshaled), nil
 }

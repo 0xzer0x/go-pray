@@ -8,6 +8,8 @@ import (
 	"github.com/mnadev/adhango/pkg/data"
 	"github.com/mnadev/adhango/pkg/util"
 	"github.com/spf13/viper"
+
+	"github.com/0xzer0x/go-pray/internal/common"
 )
 
 func calculationConfig() (*util.Coordinates, *calc.CalculationParameters, error) {
@@ -19,7 +21,7 @@ func calculationConfig() (*util.Coordinates, *calc.CalculationParameters, error)
 		return nil, nil, fmt.Errorf("failed to construct coordinates: %v", err)
 	}
 
-	method, err := CalculationMethod(viper.GetString("method"))
+	method, err := common.CalculationMethod(viper.GetString("method"))
 	if err != nil {
 		return nil, nil, err
 	}

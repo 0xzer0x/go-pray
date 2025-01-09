@@ -12,19 +12,16 @@ var (
 	buildTime   = ""
 )
 
-func Version() string {
-	if string(version[0]) == "v" {
-		return version[1:]
-	}
-
-	return version
+type VersionInfo struct {
+	Version     string    `json:"version"`
+	BuildCommit string    `json:"build_commit"`
+	BuildTime   time.Time `json:"build_time"`
+	Os          string    `json:"os"`
+	Arch        string    `json:"arch"`
+	Runtime     string    `json:"runtime"`
 }
 
-func BuildCommit() string {
-	return buildCommit
-}
-
-func BuildTime() (time.Time, error) {
+func parseBuildTime() (time.Time, error) {
 	if parsedBuildTime, err := time.Parse(time.DateTime, buildTime); err != nil {
 		return time.Time{}, err
 	} else {
@@ -32,10 +29,23 @@ func BuildTime() (time.Time, error) {
 	}
 }
 
-func OsArch() string {
-	return runtime.GOOS + "/" + runtime.GOARCH
-}
+func NewVersionInfo() (VersionInfo, error) {
+	parsedTime, err := parseBuildTime()
+	if err != nil {
+		return VersionInfo{}, err
+	}
 
-func Runtime() string {
-	return runtime.Version()
+	versionNum := version
+	if string(versionNum[0]) == "v" {
+		versionNum = versionNum[1:]
+	}
+
+	return VersionInfo{
+		Version:     versionNum,
+		BuildCommit: buildCommit,
+		BuildTime:   parsedTime,
+		Os:          runtime.GOOS,
+		Arch:        runtime.GOARCH,
+		Runtime:     runtime.Version(),
+	}, nil
 }
