@@ -27,7 +27,7 @@ type JsonFormatStrategy struct{}
 func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	prayerTime := calendar.TimeForPrayer(prayer)
 	prayerInf := prayerInfo{
-		Name:      common.PrayerName(prayer),
+		Name:      common.CalendarName(calendar, prayer),
 		Time:      prayerTime.Format(time.TimeOnly),
 		Remaining: time.Until(prayerTime).Truncate(time.Second).String(),
 	}
