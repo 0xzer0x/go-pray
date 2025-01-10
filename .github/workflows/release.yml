@@ -21,10 +21,13 @@ jobs:
         with:
           go-version: stable
 
+      - name: Install dependencies
+        run: sudo apt install libasound2-dev
+
       - name: Install Cosign
         uses: sigstore/cosign-installer@v3.7.0
 
-      - name: Run GoReleaser
+      - name: Run goreleaser
         uses: goreleaser/goreleaser-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
