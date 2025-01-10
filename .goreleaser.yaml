@@ -45,9 +45,5 @@ binary_signs:
     args:
       - sign-blob
       - --yes
-      - --bundle=cosign.bundle
-      - --output=${signature}
+      - --bundle=${signature}
       - ${artifact}
-release:
-  extra_files:
-    - glob: cosign.bundle
