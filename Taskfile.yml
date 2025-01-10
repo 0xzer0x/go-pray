@@ -13,7 +13,7 @@ tasks:
       go build
       -ldflags="-X 'github.com/0xzer0x/go-pray/internal/version.version={{ .RELEASE_VERSION }}'
       -X 'github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .RELEASE_COMMIT }}'
-      -X 'github.com/0xzer0x/go-pray/internal/version.buildTime=$(date '+%F %T')'"
+      -X 'github.com/0xzer0x/go-pray/internal/version.buildTime=$(date -u '+%F %T')'"
   install:
     deps:
       - build
