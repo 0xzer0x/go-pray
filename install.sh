@@ -107,11 +107,12 @@ _install-binary() {
     __prompt -e "go-pray binary does not exist"
     exit 1
   elif [ ! -d "${INSTALL_DIR}" ]; then
-    __prompt -e "invalid install directory: ${INSTALL_DIR}"
-    exit 1
+    __prompt -w "creating install directory: ${INSTALL_DIR}"
+    mkdir -p "${INSTALL_DIR}"
   fi
 
   mv "${_TEMPDIR}/go-pray" "${INSTALL_DIR}/"
+  __prompt -s "successfully installed ${INSTALL_DIR}/go-pray"
 }
 
 _main() {
