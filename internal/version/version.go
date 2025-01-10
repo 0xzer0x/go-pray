@@ -22,7 +22,7 @@ type VersionInfo struct {
 }
 
 func parseBuildTime() (time.Time, error) {
-	if parsedBuildTime, err := time.Parse(time.DateTime, buildTime); err != nil {
+	if parsedBuildTime, err := time.Parse(time.RFC3339, buildTime); err != nil {
 		return time.Time{}, err
 	} else {
 		return parsedBuildTime, nil

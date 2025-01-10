@@ -1,0 +1,48 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - goos:
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - -X github.com/0xzer0x/go-pray/internal/version.version={{ .Version }}
+      - -X github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .FullCommit }}
+      - -X github.com/0xzer0x/go-pray/internal/version.buildTime={{ .CommitDate }}
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        format: zip
+nfpms:
+  - maintainer: Youssef Fathy <youssefessamasu@gmail.com>
+    description: Prayer times CLI to remind you to Go pray
+    formats:
+      - apk
+      - deb
+      - rpm
+      - archlinux
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+# NOTE: must be run in github actions to work
+binary_signs:
+  - cmd: cosign
+    args:
+      - sign-blob
+      - --yes
+      - --output-signature=${signature}
+      - ${artifact}
