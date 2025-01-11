@@ -13,29 +13,27 @@ Powerful and user-friendly command-line interface (CLI) application that helps M
 
 ## Installation 📥
 
-### Prerequisites
+> [!WARNING]
+> Currently, only the following platforms are supported:
+>
+> - Linux (x86_64)
 
-- Go (1.16 or later)
+You can run the following command to install the latest release of `go-pray`:
 
-### Steps
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/0xzer0x/go-pray.git
-cd go-pray
+```sh
+curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | bash
 ```
 
-2. Build the application:
+By default, `go-pray` is installed to `./bin`. To customize the install directory, run the following:
 
-```bash
-go build -o go-pray
+```sh
+curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_DIR=~/.local/bin bash
 ```
 
-3. Move the binary to your `$PATH`:
+To install a specific version, use the following:
 
-```bash
-mv go-pray /usr/local/bin/
+```sh
+curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_VERSION=v0.1.3 bash
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -48,17 +46,38 @@ mv go-pray /usr/local/bin/
 2. `$HOME/.config/go-pray`
 3. `$HOME/.go-pray`
 
-### Example Configuration (`config.yml`):
-
-```yaml
-method: EGYPT
-timezone: Africa/Cairo
-location:
-  lat: 30.001780
-  long: 31.290419
-```
+An example [config.yml](./config.yml) is available. You can modify it to suit your location and preferences.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Building From Source 🔨
+
+### Steps
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/0xzer0x/go-pray.git
+cd go-pray
+```
+
+2. Install dependencies for [oto](https://github.com/ebitengine/oto?tab=readme-ov-file#prerequisite):
+
+```bash
+apt install libasound2-dev
+```
+
+3. Build the application:
+
+```bash
+go build -o go-pray
+```
+
+3. Move the binary to your `$PATH`:
+
+```bash
+mv go-pray /usr/local/bin/
+```
 
 ## Contributing 👥
 
