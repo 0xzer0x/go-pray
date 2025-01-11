@@ -1,6 +1,27 @@
+# INFO: Prayer times calculation method.
+# Possible values:
+# - MWL
+# - EGYPT
+# - KARACHI
+# - UAQ
+# - DUBAI
+# - ISNA
+# - KUWAIT
+# - QATAR
+# - SINGAPO
+# - UOIF
 method: EGYPT
+
+# INFO: IANA time zone identifier.
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List.
 timezone: Africa/Cairo
+
+# INFO: Adhan mp3 to play at prayer time (daemon mode).
+# Using environmental variables is supported.
 adhan: $HOME/.local/share/qatami_takbeer.mp3
+
+# INFO: location coordinates for prayer times calculation.
+# https://www.mapcoordinates.net/en.
 location:
   lat: 30.001780
   long: 31.290419
