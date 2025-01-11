@@ -51,10 +51,19 @@ __create-tempdir() {
 }
 
 __validate-platform() {
-  if [ "${__OS}" != "GNU/Linux" ] || [ "${__ARCH}" != "x86_64" ]; then
+  # NOTE: check compatible os/arch
+  if ! grep -i linux <<<"${__OS}" &>/dev/null || [ "${__ARCH}" != "x86_64" ]; then
     __prompt -e "platform not supported, currently only linux/amd64 platform is supported"
     exit 1
   fi
+
+  # NOTE: check required commands for script
+  for cmd in cosign jq curl tar; do
+    if ! command -v "${cmd}" &>/dev/null; then
+      __prompt -e "required command not found: ${cmd}"
+      exit 1
+    fi
+  done
 }
 
 _set-install-version() {
@@ -85,9 +94,6 @@ _verify-signature() {
 
   if [ ! -r "${_TEMPDIR}/go-pray" ]; then
     __prompt -e "go-pray binary does not exist"
-    exit 1
-  elif ! command -v cosign &>/dev/null; then
-    __prompt -e "cosign command is not available"
     exit 1
   fi
 
