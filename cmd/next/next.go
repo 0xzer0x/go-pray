@@ -2,7 +2,6 @@ package next
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/mnadev/adhango/pkg/calc"
 	"github.com/spf13/cobra"
@@ -21,31 +20,6 @@ var NextCommand = &cobra.Command{
 	Args:   cobra.MaximumNArgs(1),
 	PreRun: validateNextArgs,
 	Run:    execNext,
-}
-
-func validateNextArgs(cmd *cobra.Command, args []string) {
-	err := config.ValidateCalculationParams()
-	if err != nil {
-		util.ErrExit("%v", err)
-	}
-
-	if len(args) > 0 {
-		nextPrayerArg = strings.ToLower(args[0])
-		validArg := false
-		for name := range common.Prayers {
-			if nextPrayerArg == name {
-				validArg = true
-				break
-			}
-		}
-		if !validArg {
-			util.ErrExit(
-				"invalid prayer '%s', allowed values are: %s",
-				args[0],
-				strings.Join(util.MapKeys(common.Prayers), ", "),
-			)
-		}
-	}
 }
 
 func execNext(cmd *cobra.Command, args []string) {
