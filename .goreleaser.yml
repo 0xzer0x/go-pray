@@ -36,8 +36,12 @@ changelog:
   sort: asc
   filters:
     exclude:
-      - "^docs:"
-      - "^test:"
+      - "^docs?:"
+      - "^tests?:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
+
 # NOTE: must be run in github actions to work
 binary_signs:
   - signature: ${artifact}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}.sig
