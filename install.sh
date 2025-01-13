@@ -50,6 +50,11 @@ __create-tempdir() {
   _TEMPDIR="$(mktemp -d)"
 }
 
+__cleanup() {
+  __prompt -i "removing temporary download directory"
+  rm -r "${_TEMPDIR}"
+}
+
 __validate-platform() {
   # NOTE: check compatible os/arch
   if ! grep -i linux <<<"${__OS}" &>/dev/null || [ "${__ARCH}" != "x86_64" ]; then
@@ -71,8 +76,8 @@ _set-install-version() {
     __prompt -i "fetching latest release version"
     INSTALL_VERSION="$(curl -sf https://api.github.com/repos/0xzer0x/go-pray/releases/latest | jq -r '.tag_name')"
   fi
-  __prompt -i "installing go-pray version: ${INSTALL_VERSION}"
-  _RELEASE_URL="${__BASE_INSTALL_URL}/${INSTALL_VERSION}"
+  __prompt -i "installing go-pray version: ${INSTALL_VERSION#v}"
+  _RELEASE_URL="${__BASE_INSTALL_URL}/v${INSTALL_VERSION#v}"
 }
 
 _download-archive() {
@@ -118,7 +123,6 @@ _install-binary() {
   fi
 
   mv "${_TEMPDIR}/go-pray" "${INSTALL_DIR}/"
-  __prompt -s "successfully installed ${INSTALL_DIR}/go-pray"
 }
 
 _main() {
@@ -127,6 +131,8 @@ _main() {
   _download-archive
   _verify-signature
   _install-binary
+  __cleanup
+  __prompt -s "successfully installed ${INSTALL_DIR}/go-pray"
 }
 
 _main

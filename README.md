@@ -33,7 +33,7 @@ curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | 
 To install a specific version, use the following:
 
 ```sh
-curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_VERSION=v0.1.3 bash
+curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_VERSION=0.1.3 bash
 ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
