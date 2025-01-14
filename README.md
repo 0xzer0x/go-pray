@@ -46,7 +46,7 @@ curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | 
 2. `$HOME/.config/go-pray`
 3. `$HOME/.go-pray`
 
-An example [config.yml](./config.yml) is available. You can modify it to suit your location and preferences.
+An example [config.yml](./config.example.yml) is available. You can modify it to suit your location and preferences.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
