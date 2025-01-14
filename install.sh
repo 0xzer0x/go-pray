@@ -51,7 +51,7 @@ __create-tempdir() {
 }
 
 __cleanup() {
-  __prompt -i "removing temporary download directory"
+  __prompt -w "removing temporary download directory"
   rm -r "${_TEMPDIR}"
 }
 
