@@ -32,12 +32,12 @@ func ValidateCalculationParams() error {
 	return nil
 }
 
-func FormatStrategy() format.FormatStrategy {
+func Formatter() format.Formatter {
 	value := viper.GetString("format")
 	switch value {
 	case "json":
-		return &format.JsonFormatStrategy{}
+		return &format.JsonFormatter{}
 	default:
-		return &format.TextFormatStrategy{}
+		return &format.TextFormatter{}
 	}
 }

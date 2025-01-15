@@ -24,8 +24,8 @@ func execVersion(cmd *cobra.Command, args []string) {
 		util.ErrExit("%v", err)
 	}
 
-	formatStrategy := config.FormatStrategy()
-	output, err := formatStrategy.VersionInfo(versionInfo)
+	formatter := config.Formatter()
+	output, err := formatter.VersionInfo(versionInfo)
 	if err != nil {
 		util.ErrExit("%v", err)
 	}

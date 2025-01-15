@@ -31,7 +31,7 @@ func execCalendar(cmd *cobra.Command, args []string) {
 		args = append(args, "@today")
 	}
 
-	formatStrategy := config.FormatStrategy()
+	formatter := config.Formatter()
 	for _, date := range args {
 		var calendarDate time.Time
 		if specialTime, ok := specialDates[date]; ok {
@@ -45,7 +45,7 @@ func execCalendar(cmd *cobra.Command, args []string) {
 			util.ErrExit("failed to calculate prayer times: %v", err)
 		}
 
-		output, err := formatStrategy.Calendar(*prayerTimes)
+		output, err := formatter.Calendar(*prayerTimes)
 		if err != nil {
 			util.ErrExit("%v", err)
 		}

@@ -10,9 +10,9 @@ import (
 	"github.com/0xzer0x/go-pray/internal/version"
 )
 
-type TextFormatStrategy struct{}
+type TextFormatter struct{}
 
-func (f *TextFormatStrategy) Calendar(calendar calc.PrayerTimes) (string, error) {
+func (f *TextFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 	var output string
 	output = fmt.Sprintf("-- Date: %s --\n", calendar.Fajr.Format("Jan 02, 2006"))
 	for _, prayer := range []calc.Prayer{
@@ -32,7 +32,7 @@ func (f *TextFormatStrategy) Calendar(calendar calc.PrayerTimes) (string, error)
 	return output, nil
 }
 
-func (f *TextFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
+func (f *TextFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
 	prayTime := calendar.TimeForPrayer(prayer)
 	timeRemaining := time.Until(prayTime)
 
@@ -43,7 +43,7 @@ func (f *TextFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Praye
 	), nil
 }
 
-func (f *TextFormatStrategy) VersionInfo(versionInfo version.VersionInfo) (string, error) {
+func (f *TextFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
 	return fmt.Sprintf(
 		"%-15s%s\n%-15s%s\n%-15s%s\n%-15s%s\n%-15s%s\n",
 		"Version:",

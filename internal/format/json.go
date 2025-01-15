@@ -22,7 +22,7 @@ type calendarInfo struct {
 	Prayers []prayerInfo `json:"prayers"`
 }
 
-type JsonFormatStrategy struct{}
+type JsonFormatter struct{}
 
 func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	prayerTime := calendar.TimeForPrayer(prayer)
@@ -34,7 +34,7 @@ func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	return prayerInf
 }
 
-func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) (string, error) {
+func (f *JsonFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 	pt := calendarInfo{
 		Date: calendar.Fajr.Format(time.DateOnly),
 		Prayers: []prayerInfo{
@@ -55,7 +55,7 @@ func (f *JsonFormatStrategy) Calendar(calendar calc.PrayerTimes) (string, error)
 	return string(marshaled), nil
 }
 
-func (f *JsonFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
+func (f *JsonFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
 	prayerInf := newPrayerInfo(calendar, prayer)
 	marshaled, err := json.Marshal(prayerInf)
 	if err != nil {
@@ -64,7 +64,7 @@ func (f *JsonFormatStrategy) Prayer(calendar calc.PrayerTimes, prayer calc.Praye
 	return string(marshaled), nil
 }
 
-func (f *JsonFormatStrategy) VersionInfo(versionInfo version.VersionInfo) (string, error) {
+func (f *JsonFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
 	marshaled, err := json.Marshal(versionInfo)
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal version info: %v", err)
