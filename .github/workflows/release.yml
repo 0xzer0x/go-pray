@@ -1,15 +1,33 @@
 name: Release
 on:
-  pull_request:
   push:
     tags:
       - v*.*.*
-permissions:
-  contents: write
-  id-token: write
 jobs:
-  goreleaser:
+  prepare:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Check release commit
+        run: |
+          echo "::group::Checking tag commit matches latest commit on main"
+          MAIN_SHA="$(git rev-parse --verify main)"
+          if [ "${MAIN_SHA}" != "${GITHUB_SHA}" ]; then
+            echo "::error title=Commit mismatch::Latest commit on main ($MAIN_SHA) does not match tag commit ($GITHUB_SHA)"
+            exit 1
+          fi
+          echo "::endgroup::"
+
+  release:
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4

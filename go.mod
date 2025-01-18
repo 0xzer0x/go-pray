@@ -3,7 +3,9 @@ module github.com/0xzer0x/go-pray
 go 1.23.0
 
 require (
+	github.com/esiqveland/notify v0.13.3
 	github.com/fatih/color v1.18.0
+	github.com/godbus/dbus/v5 v5.1.0
 	github.com/gopxl/beep/v2 v2.1.0
 	github.com/mnadev/adhango v0.1.0
 	github.com/spf13/cobra v1.8.1
