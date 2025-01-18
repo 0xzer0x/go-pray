@@ -73,7 +73,7 @@ func (n *DbusNotifier) Send(resChan chan<- Result, notification Notification) {
 		n.conn,
 		notify.WithOnClosed(func(closer *notify.NotificationClosedSignal) {
 			defer close(done)
-			log.Printf("closed: %v", closer.Reason.String())
+			log.Printf("notification close reason: %v", closer.Reason.String())
 			sendResult(closer.Reason == notify.ReasonDismissedByUser, nil)
 		}),
 	)
