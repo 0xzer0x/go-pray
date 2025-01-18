@@ -39,6 +39,7 @@ changelog:
       - "^docs?:"
       - "^tests?:"
       - "^chore:"
+      - '^v\d+\.\d+\.\d+'
       - Merge pull request
       - Merge branch
 
