@@ -42,41 +42,7 @@ func (n *DbusNotifier) Initialize() error {
 	return nil
 }
 
-func (n *DbusNotifier) Send(notification Notification) error {
-	if n.conn == nil {
-		return errors.New("dbus connection not initialized")
-	}
-
-	dbusNotification := notify.Notification{
-		AppName:       "go-pray",
-		AppIcon:       notification.iconName,
-		Summary:       notification.title,
-		Body:          notification.body,
-		ExpireTimeout: notification.duration,
-	}
-
-	done := make(chan struct{})
-	dbusNotifier, err := notify.New(
-		n.conn,
-		notify.WithOnClosed(func(ncs *notify.NotificationClosedSignal) {
-			defer close(done)
-		}),
-	)
-	if err != nil {
-		return err
-	}
-	defer dbusNotifier.Close()
-
-	_, err = dbusNotifier.SendNotification(dbusNotification)
-	if err != nil {
-		return err
-	}
-
-	<-done
-	return nil
-}
-
-func (n *DbusNotifier) SendInteractive(resChan chan<- Result, notification Notification) {
+func (n *DbusNotifier) Send(resChan chan<- Result, notification Notification) {
 	sendResult := func(clicked bool, err error) {
 		defer close(resChan)
 		resChan <- Result{

@@ -17,7 +17,7 @@ func notifyPrayer(
 	calendar *calc.PrayerTimes,
 	prayer calc.Prayer,
 ) {
-	notifyChan := make(chan notify.Result, 1)
+	resultChan := make(chan notify.Result, 1)
 	name := common.CalendarName(*calendar, prayer)
 	prayerTime := calendar.TimeForPrayer(prayer)
 	notification := notify.NewNotificationBuilder().
@@ -32,12 +32,12 @@ func notifyPrayer(
 
 	<-timer.C
 	log.Printf("notification timer finished: %s\n", name)
-	go notifier.SendInteractive(notifyChan, notification)
+	go notifier.Send(resultChan, notification)
 	if err := player.Play(); err != nil {
 		log.Fatalf("failed to play adhan: %v\n", err)
 	}
 
-	result := <-notifyChan
+	result := <-resultChan
 	if result.Error != nil {
 		log.Fatalf("failed to send notification: %v\n", result.Error)
 	}
