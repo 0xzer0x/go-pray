@@ -12,7 +12,6 @@ import (
 	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/notify"
 	"github.com/0xzer0x/go-pray/internal/ptime"
-	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 var DaemonCmd = &cobra.Command{
@@ -41,7 +40,7 @@ func execDaemon(cmd *cobra.Command, ars []string) {
 		// INFO: get prayers calendar which the upcoming prayer belongs to
 		prayerTimes, _, err = ptime.NextPrayer()
 		if err != nil {
-			util.ErrExit("%v", err)
+			log.Fatalf("failed to calculate prayer times: %v\n", err)
 		}
 
 		// INFO: create a WaitGroup for the prayers in the calendar with a future date
