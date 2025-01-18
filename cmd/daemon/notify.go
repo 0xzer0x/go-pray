@@ -6,36 +6,44 @@ import (
 
 	"github.com/mnadev/adhango/pkg/calc"
 
+	"github.com/0xzer0x/go-pray/internal/adhan"
 	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/notify"
-	"github.com/0xzer0x/go-pray/internal/util"
 )
 
-func notifyPrayer(calendar *calc.PrayerTimes, prayer calc.Prayer) {
+func notifyPrayer(
+	player adhan.Player,
+	notifier notify.Notifier,
+	calendar *calc.PrayerTimes,
+	prayer calc.Prayer,
+) {
 	notifyChan := make(chan notify.Result, 1)
 	name := common.CalendarName(*calendar, prayer)
 	prayerTime := calendar.TimeForPrayer(prayer)
+	notification := notify.NewNotificationBuilder().
+		SetIconName("clock-applet-symbolic").
+		SetTitle("Prayer").
+		SetBody("Time for " + name + " prayer 🕌").
+		SetDuration(player.Duration()).
+		Build()
 
 	log.Printf("creating new timer: %s - time: %s\n", name, prayerTime.Format(time.DateTime))
 	timer := time.NewTimer(time.Until(prayerTime))
 
 	<-timer.C
 	log.Printf("notification timer finished: %s\n", name)
-	go notify.SendInteractive(
-		notifyChan,
-		"clock-applet-symbolic",
-		"Time for "+name+" prayer 🕌",
-		player.Duration(),
-	)
+	go notifier.SendInteractive(notifyChan, notification)
 	if err := player.Play(); err != nil {
-		util.ErrExit("%v", err)
+		log.Fatalf("failed to play adhan: %v\n", err)
 	}
 
 	result := <-notifyChan
 	if result.Error != nil {
-		util.ErrExit("failed to send notification: %v", result.Error)
+		log.Fatalf("failed to send notification: %v\n", result.Error)
 	}
 	if result.Clicked {
-		player.Stop()
+		if err := player.Stop(); err != nil {
+			log.Fatalf("failed to stop adhan playback: %v\n", err)
+		}
 	}
 }

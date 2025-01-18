@@ -10,11 +10,10 @@ import (
 
 	"github.com/0xzer0x/go-pray/internal/adhan"
 	"github.com/0xzer0x/go-pray/internal/common"
+	"github.com/0xzer0x/go-pray/internal/notify"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
-
-var player *adhan.Player = adhan.NewPlayer()
 
 var DaemonCmd = &cobra.Command{
 	Use:    "daemon",
@@ -25,10 +24,16 @@ var DaemonCmd = &cobra.Command{
 
 func execDaemon(cmd *cobra.Command, ars []string) {
 	log.Println("starting in daemon mode")
+	player := adhan.NewPlayer()
+	notifier := notify.NewNotifier()
 
 	if err := player.Initialize(); err != nil {
-		util.ErrExit("%v", err)
+		log.Fatalf("failed to initialize player: %v\n", err)
 	}
+	if err := notifier.Initialize(); err != nil {
+		log.Fatalf("failed to initialize notifier: %v\n", err)
+	}
+	defer notifier.Close()
 
 	var err error
 	var prayerTimes calc.PrayerTimes
@@ -50,7 +55,7 @@ func execDaemon(cmd *cobra.Command, ars []string) {
 				wg.Add(1)
 				go func() {
 					defer wg.Done()
-					notifyPrayer(&prayerTimes, prayer)
+					notifyPrayer(player, notifier, &prayerTimes, prayer)
 				}()
 			}
 		}
