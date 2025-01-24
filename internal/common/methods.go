@@ -20,6 +20,7 @@ var Methods = map[string]calc.CalculationMethod{
 	"QATAR":     calc.QATAR,
 	"SINGAPORE": calc.SINGAPORE,
 	"UOIF":      calc.UOIF,
+	"OTHER":     calc.OTHER,
 }
 
 func CalculationMethod(name string) (calc.CalculationMethod, error) {

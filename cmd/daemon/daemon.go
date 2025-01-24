@@ -16,7 +16,8 @@ import (
 
 var DaemonCmd = &cobra.Command{
 	Use:    "daemon",
-	Short:  "Start the go-pray daemon to send desktop notifications at prayer times",
+	Short:  "Start the go-pray daemon",
+	Long:   `Start the go-pray daemon to send desktop notifications at prayer times`,
 	PreRun: validateDaemonArgs,
 	Run:    execDaemon,
 }
