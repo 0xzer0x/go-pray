@@ -21,12 +21,44 @@ func calculationConfig() (*util.Coordinates, *calc.CalculationParameters, error)
 		return nil, nil, fmt.Errorf("failed to construct coordinates: %v", err)
 	}
 
-	method, err := common.CalculationMethod(viper.GetString("method"))
+	method, err := common.CalculationMethod(viper.GetString("calculation.method"))
 	if err != nil {
 		return nil, nil, err
 	}
 
-	params := calc.GetMethodParameters(method)
+	var params *calc.CalculationParameters
+	if method != calc.OTHER {
+		params = calc.GetMethodParameters(method)
+	} else {
+		builder := calc.NewCalculationParametersBuilder().
+			SetFajrAngle(viper.GetFloat64("calculation.params.fajr_angle")).
+			SetIshaAngle(viper.GetFloat64("calculation.params.isha_angle")).
+			SetIshaInterval(viper.GetInt("calculation.params.isha_interval"))
+		if viper.IsSet("calculation.params.madhab") {
+			madhab, err := common.Madhab(viper.GetString("calculation.params.madhab"))
+			if err != nil {
+				return nil, nil, err
+			}
+			builder.SetMadhab(madhab)
+		}
+		if viper.IsSet("calculation.params.high_latitude_rule") {
+			hlr, err := common.HighLatitudeRule(viper.GetString("calculation.params.high_latitude_rule"))
+			if err != nil {
+				return nil, nil, err
+			}
+			builder.SetHighLatitudeRule(hlr)
+		}
+		params = builder.Build()
+	}
+
+	params.Adjustments = calc.PrayerAdjustments{
+		FajrAdj:    viper.GetInt("calculation.adjustment.fajr"),
+		DhuhrAdj:   viper.GetInt("calculation.adjustment.dhuhr"),
+		AsrAdj:     viper.GetInt("calculation.adjustment.asr"),
+		MaghribAdj: viper.GetInt("calculation.adjustment.maghrib"),
+		IshaAdj:    viper.GetInt("calculation.adjustment.isha"),
+	}
+
 	return coords, params, nil
 }
 
@@ -42,7 +74,14 @@ func DatePrayerTimes(date time.Time) (*calc.PrayerTimes, error) {
 		return nil, fmt.Errorf("failed to calculate prayer times: %v", err)
 	}
 
-	err = prayerTimes.SetTimeZone(viper.GetString("timezone"))
+	var tz string
+	if viper.IsSet("timezone") {
+		tz = viper.GetString("timezone")
+	} else {
+		tz = time.Now().Location().String()
+	}
+
+	err = prayerTimes.SetTimeZone(tz)
 	if err != nil {
 		return nil, fmt.Errorf("failed to use timezone: %v", err)
 	}
