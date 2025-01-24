@@ -9,11 +9,11 @@ import (
 func registerGlobalFlags() {
 	// NOTE: register string flags
 	for name, usage := range map[string]string{
-		"config":   "config file",
-		"timezone": "calculation timezone",
-		"method":   "calculation method",
-		"format":   "output format",
-		"adhan":    "path to adhan mp3",
+		"config":             "config file",
+		"format":             "output format",
+		"adhan":              "path to adhan mp3",
+		"timezone":           "prayer times timezone",
+		"calculation.method": "calculation method",
 	} {
 		rootCmd.PersistentFlags().String(name, "", usage)
 		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
