@@ -56,11 +56,13 @@ binary_signs:
 aurs:
   - name: go-pray
     description: Prayer times CLI to remind you to Go pray
+    homepage: https://github.com/0xzer0x/go-pray
     maintainers:
       - Youssef Fathy <youssefessamasu@gmail.com>
     private_key: "{{ .Env.AUR_KEY }}"
     git_url: ssh://aur@aur.archlinux.org/go-pray-bin.git
     commit_msg_template: "release: update to {{ .Tag }}"
+    license: GPL-3.0-or-later
     depends:
       - alsa-lib
     package: |-
