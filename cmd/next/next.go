@@ -16,7 +16,8 @@ var nextPrayerArg = ""
 
 var NextCommand = &cobra.Command{
 	Use:    "next [prayer]",
-	Short:  "Get the next prayer time or the next occurrence of a specific prayer",
+	Short:  "Next prayer time",
+	Long:   `Get the next prayer time or the next occurrence of a specific prayer`,
 	Args:   cobra.MaximumNArgs(1),
 	PreRun: validateNextArgs,
 	Run:    execNext,

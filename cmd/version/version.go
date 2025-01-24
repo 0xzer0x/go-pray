@@ -12,8 +12,8 @@ import (
 
 var VersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Display the CLI version information",
-	Long:  `The version command displays the current version information of go-pray`,
+	Short: "Version information",
+	Long:  `Display the current version information of go-pray`,
 	Args:  cobra.NoArgs,
 	Run:   execVersion,
 }

@@ -19,8 +19,8 @@ var specialDates = map[string]time.Time{
 
 var CalendarCmd = &cobra.Command{
 	Use:       "calendar [date...]",
-	Short:     "Get prayer times calendar for a specific date",
-	Long:      `Get prayer times calendar for specific date`,
+	Short:     "Prayer times calendar",
+	Long:      `Get prayer times calendar for specific date(s)`,
 	ValidArgs: util.MapKeys(specialDates),
 	PreRun:    validateCalendarArgs,
 	Run:       execCalendar,
