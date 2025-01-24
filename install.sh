@@ -94,7 +94,7 @@ _download-archive() {
 }
 
 _verify-signature() {
-  local _identity="https://github.com/0xzer0x/go-pray/.github/workflows/${__RELEASE_WORKFLOW_FILE}@refs/tags/${INSTALL_VERSION}"
+  local _identity="https://github.com/0xzer0x/go-pray/.github/workflows/${__RELEASE_WORKFLOW_FILE}@refs/tags/v${INSTALL_VERSION#v}"
   local _signature_file="go-pray_linux_amd64.sig"
 
   if [ ! -r "${_TEMPDIR}/go-pray" ]; then
