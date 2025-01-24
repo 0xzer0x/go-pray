@@ -52,3 +52,25 @@ binary_signs:
       - --yes
       - --bundle=${signature}
       - ${artifact}
+
+aurs:
+  - name: go-pray
+    description: Prayer times CLI to remind you to Go pray
+    maintainers:
+      - Youssef Fathy <youssefessamasu@gmail.com>
+    private_key: "{{ .Env.AUR_KEY }}"
+    git_url: ssh://aur@aur.archlinux.org/go-pray-bin.git
+    commit_msg_template: "release: update to {{ .Tag }}"
+    depends:
+      - alsa-lib
+    package: |-
+      # bin
+      install -Dm755 ./go-pray "${pkgdir}/usr/bin/go-pray"
+
+      # completions
+      mkdir -p "${pkgdir}/usr/share/bash-completion/completions"
+      mkdir -p "${pkgdir}/usr/share/zsh/site-functions"
+      mkdir -p "${pkgdir}/usr/share/fish/vendor_completions.d"
+      ./go-pray completion bash > "${pkgdir}/usr/share/bash-completion/completions/go-pray"
+      ./go-pray completion zsh > "${pkgdir}/usr/share/zsh/site-functions/_go-pray"
+      ./go-pray completion fish > "${pkgdir}/usr/share/fish/vendor_completions.d/go-pray.fish"
