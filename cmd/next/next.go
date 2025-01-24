@@ -15,12 +15,13 @@ import (
 var nextPrayerArg = ""
 
 var NextCommand = &cobra.Command{
-	Use:    "next [prayer]",
-	Short:  "Next prayer time",
-	Long:   `Get the next prayer time or the next occurrence of a specific prayer`,
-	Args:   cobra.MaximumNArgs(1),
-	PreRun: validateNextArgs,
-	Run:    execNext,
+	Use:       "next [prayer]",
+	Short:     "Next prayer time",
+	Long:      `Get the next prayer time or the next occurrence of a specific prayer`,
+	ValidArgs: util.MapKeys(common.Prayers),
+	Args:      cobra.MaximumNArgs(1),
+	PreRun:    validateNextArgs,
+	Run:       execNext,
 }
 
 func execNext(cmd *cobra.Command, args []string) {
