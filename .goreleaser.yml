@@ -13,7 +13,7 @@ builds:
       - -X github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .FullCommit }}
       - -X github.com/0xzer0x/go-pray/internal/version.buildTime={{ .CommitDate }}
 archives:
-  - format: tar.gz
+  - formats: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Os }}_
@@ -23,7 +23,7 @@ archives:
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     format_overrides:
       - goos: windows
-        format: zip
+        formats: zip
 nfpms:
   - maintainer: Youssef Fathy <youssefessamasu@gmail.com>
     description: Prayer times CLI to remind you to Go pray
