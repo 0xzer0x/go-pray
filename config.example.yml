@@ -1,15 +1,16 @@
 # INFO: Prayer times calculation method.
+# https://aladhan.com/calculation-methods.
 # Possible values:
-# - MWL
-# - EGYPT
-# - KARACHI
-# - UAQ
-# - DUBAI
-# - ISNA
-# - KUWAIT
-# - QATAR
-# - SINGAPO
-# - UOIF
+# - EGYPT (Egyptian General Authority of Survey)
+# - MWL (Muslim World League)
+# - KARACHI (University of Islamic Sciences, Karachi)
+# - UAQ (Umm al-Qura University, Makkah)
+# - DUBAI (The Gulf Region)
+# - ISNA (Islamic Society of North America)
+# - KUWAIT (Kuwait)
+# - QATAR (Qatar)
+# - SINGAPORE (Singapore)
+# - UOIF (Union Organization islamic de France)
 method: EGYPT
 
 # INFO: IANA time zone identifier.
