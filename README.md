@@ -27,7 +27,7 @@ curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | 
 By default, `go-pray` is installed to `./bin`. To customize the install directory, run the following:
 
 ```sh
-curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_DIR=~/.local/bin bash
+curl -sLo - https://github.com/0xzer0x/go-pray/raw/refs/heads/main/install.sh | env INSTALL_DIR=$HOME/.local/bin bash
 ```
 
 To install a specific version, use the following:
