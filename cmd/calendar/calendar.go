@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/0xzer0x/go-pray/internal/config"
+	"github.com/0xzer0x/go-pray/internal/formatter"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
@@ -31,7 +31,7 @@ func execCalendar(cmd *cobra.Command, args []string) {
 		args = append(args, "@today")
 	}
 
-	formatter := config.Formatter()
+	formatter := formatter.New()
 	for _, date := range args {
 		var calendarDate time.Time
 		if specialTime, ok := specialDates[date]; ok {

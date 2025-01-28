@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/0xzer0x/go-pray/internal/common"
-	"github.com/0xzer0x/go-pray/internal/config"
+	"github.com/0xzer0x/go-pray/internal/formatter"
 	"github.com/0xzer0x/go-pray/internal/ptime"
 	"github.com/0xzer0x/go-pray/internal/util"
 )
@@ -40,7 +40,7 @@ func execNext(cmd *cobra.Command, args []string) {
 		util.ErrExit("failed to calculate next prayer time: %v", err)
 	}
 
-	formatter := config.Formatter()
+	formatter := formatter.New()
 	output, err := formatter.Prayer(prayerTimes, nextPrayer)
 	if err != nil {
 		util.ErrExit("%v", err)

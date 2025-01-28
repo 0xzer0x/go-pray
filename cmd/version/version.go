@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/0xzer0x/go-pray/internal/config"
+	"github.com/0xzer0x/go-pray/internal/formatter"
 	"github.com/0xzer0x/go-pray/internal/util"
 	"github.com/0xzer0x/go-pray/internal/version"
 )
@@ -24,7 +24,7 @@ func execVersion(cmd *cobra.Command, args []string) {
 		util.ErrExit("%v", err)
 	}
 
-	formatter := config.Formatter()
+	formatter := formatter.New()
 	output, err := formatter.VersionInfo(versionInfo)
 	if err != nil {
 		util.ErrExit("%v", err)
