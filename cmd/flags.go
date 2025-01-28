@@ -7,6 +7,8 @@ import (
 )
 
 func registerGlobalFlags() {
+	pflags := rootCmd.PersistentFlags()
+
 	// NOTE: register string flags
 	for name, usage := range map[string]string{
 		"config":             "config file",
@@ -15,8 +17,8 @@ func registerGlobalFlags() {
 		"timezone":           "prayer times timezone",
 		"calculation.method": "calculation method",
 	} {
-		rootCmd.PersistentFlags().String(name, "", usage)
-		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+		pflags.String(name, "", usage)
+		err := viper.BindPFlag(name, pflags.Lookup(name))
 		if err != nil {
 			util.ErrExit("failed to bind %s flag", name)
 		}
@@ -27,8 +29,8 @@ func registerGlobalFlags() {
 		"location.lat":  "calculation latitude",
 		"location.long": "calculation longitude",
 	} {
-		rootCmd.PersistentFlags().Float64(name, 0, usage)
-		err := viper.BindPFlag(name, rootCmd.PersistentFlags().Lookup(name))
+		pflags.Float64(name, 0, usage)
+		err := viper.BindPFlag(name, pflags.Lookup(name))
 		if err != nil {
 			util.ErrExit("failed to bind %s flag", name)
 		}
