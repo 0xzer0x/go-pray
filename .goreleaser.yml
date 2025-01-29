@@ -3,6 +3,7 @@ version: 2
 before:
   hooks:
     - go mod tidy
+
 builds:
   - goos:
       - linux
@@ -12,8 +13,9 @@ builds:
       - -X github.com/0xzer0x/go-pray/internal/version.version={{ .Version }}
       - -X github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .FullCommit }}
       - -X github.com/0xzer0x/go-pray/internal/version.buildTime={{ .CommitDate }}
+
 archives:
-  - format: tar.gz
+  - formats: tar.gz
     name_template: >-
       {{ .ProjectName }}_
       {{- .Os }}_
@@ -21,17 +23,14 @@ archives:
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    format_overrides:
-      - goos: windows
-        format: zip
+
 nfpms:
   - maintainer: Youssef Fathy <youssefessamasu@gmail.com>
     description: Prayer times CLI to remind you to Go pray
     formats:
-      - apk
       - deb
       - rpm
-      - archlinux
+
 changelog:
   sort: asc
   filters:
@@ -43,7 +42,7 @@ changelog:
       - Merge pull request
       - Merge branch
 
-# NOTE: must be run in github actions to work
+# NOTE: must be run in github actions (requires OID token)
 binary_signs:
   - signature: ${artifact}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}.sig
     cmd: cosign

@@ -5,8 +5,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-
-	"github.com/0xzer0x/go-pray/internal/format"
 )
 
 func MissingKeyError(key string) error {
@@ -30,14 +28,4 @@ func ValidateCalculationParams() error {
 		}
 	}
 	return nil
-}
-
-func Formatter() format.Formatter {
-	value := viper.GetString("format")
-	switch value {
-	case "json":
-		return &format.JsonFormatter{}
-	default:
-		return &format.TextFormatter{}
-	}
 }
