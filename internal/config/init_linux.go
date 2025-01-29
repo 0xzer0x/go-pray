@@ -14,15 +14,16 @@ func Initialize() {
 	} else {
 		viper.SetConfigName("config.yml")
 		viper.SetConfigType("yaml")
-		if _, defined := os.LookupEnv("XDG_CONFIG_HOME"); defined {
+		if val, defined := os.LookupEnv("XDG_CONFIG_HOME"); defined && len(val) > 0 {
 			viper.AddConfigPath("$XDG_CONFIG_HOME/go-pray")
 		}
-		if _, defined := os.LookupEnv("HOME"); defined {
+		if val, defined := os.LookupEnv("HOME"); defined && len(val) > 0 {
 			viper.AddConfigPath("$HOME/.config/go-pray")
 			viper.AddConfigPath("$HOME/.go-pray")
 		}
 	}
 
+	viper.SetEnvPrefix("GO_PRAY")
 	viper.AutomaticEnv()
 	if err := viper.ReadInConfig(); err != nil {
 		util.ErrExit("failed to load configuration: %v", err)
