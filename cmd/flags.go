@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
 	"github.com/0xzer0x/go-pray/internal/util"
@@ -34,5 +35,25 @@ func registerGlobalFlags() {
 		if err != nil {
 			util.ErrExit("failed to bind %s flag", name)
 		}
+	}
+
+	err := rootCmd.RegisterFlagCompletionFunc(
+		"format",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return []string{"json", "table", "short"}, cobra.ShellCompDirectiveDefault
+		},
+	)
+	if err != nil {
+		util.ErrExit("failed to set flag completion: %v", err)
+	}
+
+	err = rootCmd.RegisterFlagCompletionFunc(
+		"config",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return []string{"yml", "yaml"}, cobra.ShellCompDirectiveFilterFileExt
+		},
+	)
+	if err != nil {
+		util.ErrExit("failed to set valid flag file extensions: %v", err)
 	}
 }
