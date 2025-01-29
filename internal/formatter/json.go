@@ -47,27 +47,27 @@ func (f *JsonFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 		},
 	}
 
-	marshaled, err := json.Marshal(pt)
+	marshaled, err := json.MarshalIndent(pt, "", " ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal prayers calendar: %v", err)
 	}
 
-	return string(marshaled), nil
+	return fmt.Sprintf("%s\n", marshaled), nil
 }
 
 func (f *JsonFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
 	prayerInf := newPrayerInfo(calendar, prayer)
-	marshaled, err := json.Marshal(prayerInf)
+	marshaled, err := json.MarshalIndent(prayerInf, "", " ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal prayer info: %v", err)
 	}
-	return string(marshaled), nil
+	return fmt.Sprintf("%s\n", marshaled), nil
 }
 
 func (f *JsonFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
-	marshaled, err := json.Marshal(versionInfo)
+	marshaled, err := json.MarshalIndent(versionInfo, "", " ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal version info: %v", err)
 	}
-	return string(marshaled), nil
+	return fmt.Sprintf("%s\n", marshaled), nil
 }
