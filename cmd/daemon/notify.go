@@ -31,6 +31,11 @@ func notifyPrayer(
 	timer := time.NewTimer(time.Until(prayerTime))
 
 	<-timer.C
+	if time.Now().After(prayerTime.Add(time.Minute)) {
+		log.Printf("prayer time passed: %s, skipping notification\n", name)
+		return
+	}
+
 	log.Printf("notification timer finished: %s\n", name)
 	go notifier.Send(resultChan, notification)
 	if err := player.Play(); err != nil {
