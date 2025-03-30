@@ -3,6 +3,7 @@ module github.com/0xzer0x/go-pray
 go 1.23.0
 
 require (
+	github.com/charmbracelet/lipgloss v1.0.0
 	github.com/esiqveland/notify v0.13.3
 	github.com/fatih/color v1.18.0
 	github.com/godbus/dbus/v5 v5.1.0
@@ -14,7 +15,6 @@ require (
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
-	github.com/charmbracelet/lipgloss v1.0.0 // indirect
 	github.com/charmbracelet/x/ansi v0.4.2 // indirect
 	github.com/ebitengine/oto/v3 v3.2.0 // indirect
 	github.com/ebitengine/purego v0.7.1 // indirect
