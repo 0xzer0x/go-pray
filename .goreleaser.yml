@@ -68,10 +68,8 @@ aurs:
       # bin
       install -Dm755 ./go-pray "${pkgdir}/usr/bin/go-pray"
 
-      cat <<EOF >tmpconfig.yml
-      calcuation: { method: "UAQ" }
-      location: { lat: 0, long: 0 }
-      EOF
+      # create temporary config file
+      printf 'calculation: { method: "UAQ" }\nlocation: { lat: 0, long: 0 }\n' > tmpconfig.yml
 
       # completions
       mkdir -p "${pkgdir}/usr/share/bash-completion/completions"
