@@ -34,7 +34,8 @@ func (f *TableFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 		StyleFunc(f.cellStyle).
 		Headers("DATE", "PRAYER", "TIME", "REMAINING")
 
-	for _, prayer := range common.Prayers {
+	for _, name := range []string{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"} {
+		prayer := common.Prayers[name]
 		pt := calendar.TimeForPrayer(prayer)
 		prayersTable.Row(
 			pt.Format(time.DateOnly),

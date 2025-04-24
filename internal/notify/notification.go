@@ -2,7 +2,6 @@ package notify
 
 import (
 	"fmt"
-	"log"
 	"strings"
 	"text/template"
 	"time"
@@ -107,11 +106,5 @@ func (b *NotificationBuilder) Build() (Notification, error) {
 		return Notification{}, fmt.Errorf("failed to execute body template: %v", err)
 	}
 
-	log.Printf(
-		"icon: %s\ntitle: %s\nbody: %s",
-		notification.iconName,
-		notification.title,
-		notification.body,
-	)
 	return notification, nil
 }
