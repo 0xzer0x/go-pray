@@ -10,6 +10,7 @@ import (
 	"github.com/0xzer0x/go-pray/internal/adhan"
 	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/notify"
+	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 func notifyPrayer(
@@ -32,7 +33,11 @@ func notifyPrayer(
 		log.Fatalf("failed to build notification: %v", err)
 	}
 
-	log.Printf("creating new timer: %s - time: %s\n", name, prayerTime.Format(time.DateTime))
+	log.Printf(
+		"creating new timer: %s - time: %s\n",
+		util.FindInMap(common.Prayers, prayer),
+		prayerTime.Format(time.DateTime),
+	)
 	timer := time.NewTimer(time.Until(prayerTime))
 
 	<-timer.C

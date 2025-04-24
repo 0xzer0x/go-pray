@@ -4,7 +4,9 @@ import (
 	"time"
 
 	"github.com/mnadev/adhango/pkg/calc"
-	"github.com/spf13/viper"
+
+	"github.com/0xzer0x/go-pray/internal/i18n"
+	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 var Prayers = map[string]calc.Prayer{
@@ -16,52 +18,43 @@ var Prayers = map[string]calc.Prayer{
 	"isha":    calc.ISHA,
 }
 
-var prayerNames = struct {
-	En map[calc.Prayer]string
-	Ar map[calc.Prayer]string
-}{
-	En: map[calc.Prayer]string{
-		calc.FAJR:    "Fajr",
-		calc.SUNRISE: "Sunrise",
-		calc.DHUHR:   "Dhuhr",
-		calc.ASR:     "Asr",
-		calc.MAGHRIB: "Maghrib",
-		calc.ISHA:    "Isha",
-	},
-	Ar: map[calc.Prayer]string{
-		calc.FAJR:    "الفجر",
-		calc.SUNRISE: "الشروق",
-		calc.DHUHR:   "الظهر",
-		calc.ASR:     "العصر",
-		calc.MAGHRIB: "المغرب",
-		calc.ISHA:    "العشاء",
-	},
-}
-
 func IsJumuaa(prayerTimes calc.PrayerTimes) bool {
 	return prayerTimes.Dhuhr.Weekday() == time.Friday
 }
 
 func PrayerName(prayer calc.Prayer) string {
-	lang := viper.GetString("language")
-	if lang == "ar" {
-		return prayerNames.Ar[prayer]
-	} else {
-		return prayerNames.En[prayer]
+	localizer, err := i18n.GetInstance()
+	if err != nil {
+		return ""
 	}
+
+	messageId := util.FindInMap(Prayers, prayer)
+
+	var localizedName string
+	if localizedName, err = localizer.Localize(messageId, nil); err != nil {
+		return ""
+	}
+
+	return localizedName
 }
 
 func CalendarName(calendar calc.PrayerTimes, prayer calc.Prayer) string {
-	lang := viper.GetString("language")
-	var name string
-	if IsJumuaa(calendar) && prayer == calc.DHUHR {
-		if lang == "ar" {
-			name = "الجمعة"
-		} else {
-			name = "Jumuaa"
-		}
-	} else {
-		name = PrayerName(prayer)
+	localizer, err := i18n.GetInstance()
+	if err != nil {
+		return ""
 	}
-	return name
+
+	var messageId string
+	if IsJumuaa(calendar) && prayer == calc.DHUHR {
+		messageId = "jumuaa"
+	} else {
+		messageId = util.FindInMap(Prayers, prayer)
+	}
+
+	var localizedName string
+	if localizedName, err = localizer.Localize(messageId, nil); err != nil {
+		return ""
+	}
+
+	return localizedName
 }
