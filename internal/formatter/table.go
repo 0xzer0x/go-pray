@@ -20,8 +20,8 @@ var (
 )
 
 func (f *TableFormatter) cellStyle(row, col int) lipgloss.Style {
-	switch {
-	case row == table.HeaderRow:
+	switch row {
+	case table.HeaderRow:
 		return headerStyle
 	default:
 		return cellStyle
@@ -34,8 +34,7 @@ func (f *TableFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 		StyleFunc(f.cellStyle).
 		Headers("DATE", "PRAYER", "TIME", "REMAINING")
 
-	for _, name := range []string{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"} {
-		prayer := common.Prayers[name]
+	for _, prayer := range common.Prayers {
 		pt := calendar.TimeForPrayer(prayer)
 		prayersTable.Row(
 			pt.Format(time.DateOnly),
