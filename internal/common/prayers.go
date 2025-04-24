@@ -1,10 +1,10 @@
 package common
 
 import (
-	"strings"
 	"time"
 
 	"github.com/mnadev/adhango/pkg/calc"
+	"github.com/spf13/viper"
 )
 
 var Prayers = map[string]calc.Prayer{
@@ -16,28 +16,50 @@ var Prayers = map[string]calc.Prayer{
 	"isha":    calc.ISHA,
 }
 
+var prayerNames = struct {
+	En map[calc.Prayer]string
+	Ar map[calc.Prayer]string
+}{
+	En: map[calc.Prayer]string{
+		calc.FAJR:    "Fajr",
+		calc.SUNRISE: "Sunrise",
+		calc.DHUHR:   "Dhuhr",
+		calc.ASR:     "Asr",
+		calc.MAGHRIB: "Maghrib",
+		calc.ISHA:    "Isha",
+	},
+	Ar: map[calc.Prayer]string{
+		calc.FAJR:    "الفجر",
+		calc.SUNRISE: "الشروق",
+		calc.DHUHR:   "الظهر",
+		calc.ASR:     "العصر",
+		calc.MAGHRIB: "المغرب",
+		calc.ISHA:    "العشاء",
+	},
+}
+
 func IsJumuaa(prayerTimes calc.PrayerTimes) bool {
 	return prayerTimes.Dhuhr.Weekday() == time.Friday
 }
 
 func PrayerName(prayer calc.Prayer) string {
-	var name string
-	for k, v := range Prayers {
-		if v == prayer {
-			name = k
-		}
+	lang := viper.GetString("language")
+	if lang == "ar" {
+		return prayerNames.Ar[prayer]
+	} else {
+		return prayerNames.En[prayer]
 	}
-
-	if len(name) > 0 {
-		name = strings.ToUpper(string(name[0])) + name[1:]
-	}
-	return name
 }
 
 func CalendarName(calendar calc.PrayerTimes, prayer calc.Prayer) string {
+	lang := viper.GetString("language")
 	var name string
 	if IsJumuaa(calendar) && prayer == calc.DHUHR {
-		name = "Jumuaa"
+		if lang == "ar" {
+			name = "الجمعة"
+		} else {
+			name = "Jumuaa"
+		}
 	} else {
 		name = PrayerName(prayer)
 	}
