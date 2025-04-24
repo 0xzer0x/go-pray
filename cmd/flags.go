@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -18,7 +20,7 @@ func registerGlobalFlags() {
 		{"config", "", "config file"},
 		{"format", "", "output format"},
 		{"adhan", "", "path to adhan mp3"},
-		{"timezone", "", "prayer times timezone"},
+		{"timezone", time.Now().Location().String(), "prayer times timezone"},
 		{"calculation.method", "", "calculation method"},
 		{"notification.icon", "clock-applet-symbolic", "notification icon name"},
 		{"notification.title", "Prayer", "notification title template"},
