@@ -1,0 +1,26 @@
+[fajr]
+other = "الفجر"
+
+[sunrise]
+other = "الشروق"
+
+[dhuhr]
+other = "الظهر"
+
+[asr]
+other = "العصر"
+
+[maghrib]
+other = "المغرب"
+
+[isha]
+other = "العشاء"
+
+[jumuaa]
+other = "الجمعة"
+
+[prayer-next]
+other = "{{ .CalendarName }} خلال {{ .Remaining }}"
+
+[date]
+other = "التاريخ"

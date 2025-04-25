@@ -1,10 +1,12 @@
 package common
 
 import (
-	"strings"
 	"time"
 
 	"github.com/mnadev/adhango/pkg/calc"
+
+	"github.com/0xzer0x/go-pray/internal/i18n"
+	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 var Prayers = map[string]calc.Prayer{
@@ -21,25 +23,38 @@ func IsJumuaa(prayerTimes calc.PrayerTimes) bool {
 }
 
 func PrayerName(prayer calc.Prayer) string {
-	var name string
-	for k, v := range Prayers {
-		if v == prayer {
-			name = k
-		}
+	localizer, err := i18n.GetInstance()
+	if err != nil {
+		return ""
 	}
 
-	if len(name) > 0 {
-		name = strings.ToUpper(string(name[0])) + name[1:]
+	messageId := util.FindInMap(Prayers, prayer)
+
+	var localizedName string
+	if localizedName, err = localizer.Localize(messageId, nil); err != nil {
+		return ""
 	}
-	return name
+
+	return localizedName
 }
 
 func CalendarName(calendar calc.PrayerTimes, prayer calc.Prayer) string {
-	var name string
-	if IsJumuaa(calendar) && prayer == calc.DHUHR {
-		name = "Jumuaa"
-	} else {
-		name = PrayerName(prayer)
+	localizer, err := i18n.GetInstance()
+	if err != nil {
+		return ""
 	}
-	return name
+
+	var messageId string
+	if IsJumuaa(calendar) && prayer == calc.DHUHR {
+		messageId = "jumuaa"
+	} else {
+		messageId = util.FindInMap(Prayers, prayer)
+	}
+
+	var localizedName string
+	if localizedName, err = localizer.Localize(messageId, nil); err != nil {
+		return ""
+	}
+
+	return localizedName
 }

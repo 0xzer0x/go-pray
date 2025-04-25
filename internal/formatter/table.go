@@ -20,8 +20,8 @@ var (
 )
 
 func (f *TableFormatter) cellStyle(row, col int) lipgloss.Style {
-	switch {
-	case row == table.HeaderRow:
+	switch row {
+	case table.HeaderRow:
 		return headerStyle
 	default:
 		return cellStyle

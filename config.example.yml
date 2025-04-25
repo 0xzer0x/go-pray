@@ -1,4 +1,4 @@
-# INFO: calculation configuration
+# INFO: Calculation configuration.
 calculation:
   # INFO: Prayer times calculation method (required).
   # https://aladhan.com/calculation-methods.
@@ -49,8 +49,29 @@ timezone: Africa/Cairo
 # Using environmental variables is supported.
 adhan: $HOME/.local/share/qatami_takbeer.mp3
 
-# INFO: location coordinates for prayer times calculation (required).
+# INFO: Location coordinates for prayer times calculation (required).
 # https://www.mapcoordinates.net/en.
 location:
   lat: 30.001780
   long: 31.290419
+
+# INFO: Output langauge (default: en).
+# Possible values:
+# - en (English)
+# - ar (Arabic)
+language: en
+
+# INFO: Prayer notification configuration.
+notification:
+  # INFO: Notification icon name (default: clock-applet-symbolic).
+  icon: dialog-information
+  # INFO: Notificaton title template (default: "Prayer").
+  # Available data:
+  # - PrayerName: The current prayer name.
+  # - CalendarName: The current prayer name (changes Dhuhr to Jumuaa on Fridays).
+  title: Prayer Times
+  # INFO: Notificaton body template (default: "Time for {{ .CalendarName }} prayer 🕌").
+  # Available data:
+  # - PrayerName: The current prayer name.
+  # - CalendarName: The current prayer name (changes Dhuhr to Jumuaa on Fridays).
+  body: It is time for {{ .CalendarName }} prayer!

@@ -5,10 +5,12 @@ import (
 	"time"
 
 	"github.com/mnadev/adhango/pkg/calc"
+	"github.com/spf13/viper"
 
 	"github.com/0xzer0x/go-pray/internal/adhan"
 	"github.com/0xzer0x/go-pray/internal/common"
 	"github.com/0xzer0x/go-pray/internal/notify"
+	"github.com/0xzer0x/go-pray/internal/util"
 )
 
 func notifyPrayer(
@@ -20,14 +22,22 @@ func notifyPrayer(
 	resultChan := make(chan notify.Result, 1)
 	name := common.CalendarName(*calendar, prayer)
 	prayerTime := calendar.TimeForPrayer(prayer)
-	notification := notify.NewNotificationBuilder().
-		SetIconName("clock-applet-symbolic").
-		SetTitle("Prayer").
-		SetBody("Time for " + name + " prayer 🕌").
+	notification, err := notify.NewNotificationBuilder().
+		SetIconName(viper.GetString("notification.icon")).
+		SetTitleTemplate(viper.GetString("notification.title")).
+		SetBodyTemplate(viper.GetString("notification.body")).
 		SetDuration(player.Duration()).
+		SetPrayer(calendar, prayer).
 		Build()
+	if err != nil {
+		log.Fatalf("failed to build notification: %v", err)
+	}
 
-	log.Printf("creating new timer: %s - time: %s\n", name, prayerTime.Format(time.DateTime))
+	log.Printf(
+		"creating new timer: %s - time: %s\n",
+		util.FindInMap(common.Prayers, prayer),
+		prayerTime.Format(time.DateTime),
+	)
 	timer := time.NewTimer(time.Until(prayerTime))
 
 	<-timer.C

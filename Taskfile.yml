@@ -14,7 +14,8 @@ tasks:
       -ldflags="-X 'github.com/0xzer0x/go-pray/internal/version.version={{ .RELEASE_VERSION }}'
       -X 'github.com/0xzer0x/go-pray/internal/version.buildCommit={{ .RELEASE_COMMIT }}'
       -X 'github.com/0xzer0x/go-pray/internal/version.buildTime={{ dateInZone "2006-01-02T15:04:05Z07:00" (now) "UTC" }}'"
+      -o build/go-pray
   install:
     deps:
       - build
-    cmd: mv {{ .TASKFILE_DIR }}/go-pray {{ .INSTALL_DIR }}/go-pray
+    cmd: mv {{ .TASKFILE_DIR }}/build/go-pray {{ .INSTALL_DIR }}/go-pray

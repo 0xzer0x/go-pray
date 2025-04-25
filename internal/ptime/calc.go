@@ -74,13 +74,7 @@ func DatePrayerTimes(date time.Time) (*calc.PrayerTimes, error) {
 		return nil, fmt.Errorf("failed to calculate prayer times: %v", err)
 	}
 
-	var tz string
-	if viper.IsSet("timezone") {
-		tz = viper.GetString("timezone")
-	} else {
-		tz = time.Now().Location().String()
-	}
-
+	tz := viper.GetString("timezone")
 	err = prayerTimes.SetTimeZone(tz)
 	if err != nil {
 		return nil, fmt.Errorf("failed to use timezone: %v", err)

@@ -1,0 +1,26 @@
+[fajr]
+other = "Fajr"
+
+[sunrise]
+other = "Sunrise"
+
+[dhuhr]
+other = "Dhuhr"
+
+[asr]
+other = "Asr"
+
+[maghrib]
+other = "Maghrib"
+
+[isha]
+other = "Isha"
+
+[jumuaa]
+other = "Jumuaa"
+
+[prayer-next]
+other = "{{ .CalendarName }} in {{ .Remaining }}"
+
+[date]
+other = "Date"

@@ -13,7 +13,7 @@ func MissingKeyError(key string) error {
 
 func ValidateKey(key string) error {
 	if !viper.IsSet(key) {
-		return fmt.Errorf("%s is not set, use config file or command-line flags to set it.", key)
+		return fmt.Errorf("%s is not set, use config file or command-line flags to set it", key)
 	}
 	return nil
 }
@@ -21,10 +21,7 @@ func ValidateKey(key string) error {
 func ValidateCalculationParams() error {
 	for _, key := range []string{"calculation.method", "location.lat", "location.long"} {
 		if !viper.IsSet(key) {
-			return fmt.Errorf(
-				"%s is not set, use config file or command-line flags to set it.",
-				key,
-			)
+			return fmt.Errorf("%s is not set, use config file or command-line flags to set it", key)
 		}
 	}
 	return nil
