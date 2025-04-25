@@ -17,10 +17,10 @@ type Notification struct {
 }
 
 type NotificationBuilder struct {
-	iconName, title, body string
-	duration              time.Duration
-	calendar              *calc.PrayerTimes
-	prayer                calc.Prayer
+	iconName, titleTemplate, bodyTemplate string
+	duration                              time.Duration
+	calendar                              *calc.PrayerTimes
+	prayer                                calc.Prayer
 }
 
 func NewNotificationBuilder() *NotificationBuilder {
@@ -34,14 +34,14 @@ func (b *NotificationBuilder) SetIconName(name string) *NotificationBuilder {
 }
 
 // Sets the title for the notification, will be treated as template if prayer is set
-func (b *NotificationBuilder) SetTitle(title string) *NotificationBuilder {
-	b.title = title
+func (b *NotificationBuilder) SetTitleTemplate(title string) *NotificationBuilder {
+	b.titleTemplate = title
 	return b
 }
 
 // Sets the body for the notification, will be treated as template if prayer is set
-func (b *NotificationBuilder) SetBody(body string) *NotificationBuilder {
-	b.body = body
+func (b *NotificationBuilder) SetBodyTemplate(body string) *NotificationBuilder {
+	b.bodyTemplate = body
 	return b
 }
 
@@ -81,8 +81,8 @@ func (b *NotificationBuilder) Build() (Notification, error) {
 	if b.prayer == calc.NO_PRAYER {
 		return Notification{
 			iconName: b.iconName,
-			title:    b.title,
-			body:     b.body,
+			title:    b.titleTemplate,
+			body:     b.bodyTemplate,
 			duration: b.duration,
 		}, nil
 	}
@@ -97,12 +97,10 @@ func (b *NotificationBuilder) Build() (Notification, error) {
 	}
 
 	notification := Notification{iconName: b.iconName, duration: b.duration}
-	notification.title, err = b.renderTemplate("notification-title", b.title, prayerData)
-	if err != nil {
+	if notification.title, err = b.renderTemplate("notification-title", b.titleTemplate, prayerData); err != nil {
 		return Notification{}, fmt.Errorf("failed to execute title template: %v", err)
 	}
-	notification.body, err = b.renderTemplate("notification-body", b.body, prayerData)
-	if err != nil {
+	if notification.body, err = b.renderTemplate("notification-body", b.bodyTemplate, prayerData); err != nil {
 		return Notification{}, fmt.Errorf("failed to execute body template: %v", err)
 	}
 

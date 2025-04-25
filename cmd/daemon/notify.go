@@ -24,8 +24,8 @@ func notifyPrayer(
 	prayerTime := calendar.TimeForPrayer(prayer)
 	notification, err := notify.NewNotificationBuilder().
 		SetIconName(viper.GetString("notification.icon")).
-		SetTitle(viper.GetString("notification.title")).
-		SetBody(viper.GetString("notification.body")).
+		SetTitleTemplate(viper.GetString("notification.title")).
+		SetBodyTemplate(viper.GetString("notification.body")).
 		SetDuration(player.Duration()).
 		SetPrayer(calendar, prayer).
 		Build()
