@@ -16,10 +16,10 @@ func registerGlobalFlags() {
 
 	// NOTE: register string flags
 	for _, flagInfo := range [][3]string{
-		{"language", "en", "output language"},
 		{"config", "", "config file"},
-		{"format", "", "output format"},
 		{"adhan", "", "path to adhan mp3"},
+		{"language", "en", "output language"},
+		{"format", "short", "output format"},
 		{"timezone", time.Now().Location().String(), "prayer times timezone"},
 		{"calculation.method", "", "calculation method"},
 		{"notification.icon", "clock-applet-symbolic", "notification icon name"},
