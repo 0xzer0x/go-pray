@@ -39,8 +39,19 @@ func notifyPrayer(
 		prayerTime.Format(time.DateTime),
 	)
 	timer := time.NewTimer(time.Until(prayerTime))
+	updateTicker := time.NewTicker(time.Minute)
 
-	<-timer.C
+	done := false
+	for !done {
+		select {
+		case <-updateTicker.C:
+			timer.Reset(time.Until(prayerTime))
+		case <-timer.C:
+			updateTicker.Stop()
+			done = true
+		}
+	}
+
 	if time.Now().After(prayerTime.Add(time.Minute)) {
 		log.Printf("prayer time passed: %s, skipping notification\n", name)
 		return
