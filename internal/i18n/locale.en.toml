@@ -24,3 +24,12 @@ other = "{{ .CalendarName }} in {{ .Remaining }}"
 
 [date]
 other = "Date"
+
+[prayer]
+other = "Prayer"
+
+[time]
+other = "Time"
+
+[remaining]
+other = "Remaining"

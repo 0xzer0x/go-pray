@@ -2,7 +2,9 @@ package i18n
 
 import (
 	"embed"
+	"strings"
 	"sync"
+	"time"
 
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"github.com/pelletier/go-toml/v2"
@@ -19,8 +21,27 @@ type Localizer struct {
 }
 
 var (
-	lock                 = &sync.Mutex{}
-	singleton *Localizer = nil
+	lock                           = &sync.Mutex{}
+	singleton           *Localizer = nil
+	arabicTimeLocalizer            = strings.NewReplacer(
+		"0", "٠",
+		"1", "١",
+		"2", "٢",
+		"3", "٣",
+		"4", "٤",
+		"5", "٥",
+		"6", "٦",
+		"7", "٧",
+		"8", "٨",
+		"9", "٩",
+		"h", "س",
+		"m", "د",
+		"s", "ث",
+		"am", "ص",
+		"pm", "م",
+		"AM", "ص",
+		"PM", "م",
+	)
 )
 
 func GetInstance() (*Localizer, error) {
@@ -59,4 +80,32 @@ func (l *Localizer) Localize(messageID string, templateData *map[string]any) (st
 	}
 
 	return l.localizer.Localize(config)
+}
+
+func (l *Localizer) LocalizeTime(tm time.Time, format string) string {
+	formattedTime := tm.Format(format)
+	localizedTime := formattedTime
+
+	lang := viper.GetString("language")
+	if lang == "ar" {
+		localizedTime = arabicTimeLocalizer.Replace(formattedTime)
+	}
+
+	return localizedTime
+}
+
+func (l *Localizer) LocalizeDuration(d time.Duration) string {
+	lang := viper.GetString("language")
+	if lang == "ar" {
+		return arabicTimeLocalizer.Replace(d.String())
+	}
+	return d.String()
+}
+
+func (l *Localizer) LocalizeTimeString(s string) string {
+	lang := viper.GetString("language")
+	if lang == "ar" {
+		return arabicTimeLocalizer.Replace(s)
+	}
+	return s
 }

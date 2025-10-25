@@ -27,9 +27,16 @@ archives:
 nfpms:
   - maintainer: Youssef Fathy <youssefessamasu@gmail.com>
     description: Prayer times CLI to remind you to Go pray
+    dependencies:
+      - alsa-lib
     formats:
+      - apk
       - deb
       - rpm
+    overrides:
+      deb:
+        dependencies:
+          - libasound2t64
 
 changelog:
   sort: asc

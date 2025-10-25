@@ -13,14 +13,19 @@ type Formatter interface {
 	VersionInfo(versionInfo version.VersionInfo) (string, error)
 }
 
-func New() Formatter {
+func New() (Formatter, error) {
+	var formatter Formatter
+	var err error
+
 	value := viper.GetString("format")
 	switch value {
 	case "json":
-		return &JsonFormatter{}
+		formatter, err = NewJSONFormatter()
 	case "table":
-		return &TableFormatter{}
+		formatter, err = NewTableFormatter()
 	default:
-		return &ShortFormatter{}
+		formatter, err = NewShortFormatter()
 	}
+
+	return formatter, err
 }

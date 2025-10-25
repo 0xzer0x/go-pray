@@ -31,7 +31,11 @@ func execCalendar(cmd *cobra.Command, args []string) {
 		args = append(args, "@today")
 	}
 
-	formatter := formatter.New()
+	formatter, err := formatter.New()
+	if err != nil {
+		util.ErrExit("failed to create formatter: %v", err)
+	}
+
 	for _, date := range args {
 		var calendarDate time.Time
 		if specialTime, ok := specialDates[date]; ok {

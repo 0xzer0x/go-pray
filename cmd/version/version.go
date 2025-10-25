@@ -24,7 +24,11 @@ func execVersion(cmd *cobra.Command, args []string) {
 		util.ErrExit("%v", err)
 	}
 
-	formatter := formatter.New()
+	formatter, err := formatter.New()
+	if err != nil {
+		util.ErrExit("failed to create formatter: %v", err)
+	}
+
 	output, err := formatter.VersionInfo(versionInfo)
 	if err != nil {
 		util.ErrExit("%v", err)
