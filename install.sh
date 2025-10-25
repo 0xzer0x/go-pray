@@ -165,9 +165,9 @@ _install_debian() {
 
   __prompt -i "Installing ${_package_name}"
   if [ "$(id -u)" = "0" ]; then
-    apt-get install "${_TEMPDIR}/${_package_name}"
+    apt-get install -y "${_TEMPDIR}/${_package_name}"
   else
-    sudo apt-get install "${_TEMPDIR}/${_package_name}"
+    sudo apt-get install -y "${_TEMPDIR}/${_package_name}"
   fi
 }
 
@@ -182,9 +182,9 @@ _install_fedora() {
 
   __prompt -i "Installing ${_package_name}"
   if [ "$(id -u)" = "0" ]; then
-    dnf install "${_TEMPDIR}/${_package_name}"
+    dnf install -y "${_TEMPDIR}/${_package_name}"
   else
-    sudo dnf install "${_TEMPDIR}/${_package_name}"
+    sudo dnf install -y "${_TEMPDIR}/${_package_name}"
   fi
 }
 
@@ -210,9 +210,9 @@ _install_archlinux() {
 
   __prompt -w "Installing ${_package_name} from AUR"
   if command -v yay &>/dev/null; then
-    yay -S "${_package_name}"
+    yay -S --noconfirm "${_package_name}"
   else
-    paru -S "${_package_name}"
+    paru -S --noconfirm "${_package_name}"
   fi
 }
 
