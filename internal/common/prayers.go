@@ -44,15 +44,15 @@ func CalendarName(calendar calc.PrayerTimes, prayer calc.Prayer) string {
 		return ""
 	}
 
-	var messageId string
+	var messageID string
 	if IsJumuaa(calendar) && prayer == calc.DHUHR {
-		messageId = "jumuaa"
+		messageID = "jumuaa"
 	} else {
-		messageId = util.FindInMap(Prayers, prayer)
+		messageID = util.FindInMap(Prayers, prayer)
 	}
 
 	var localizedName string
-	if localizedName, err = localizer.Localize(messageId, nil); err != nil {
+	if localizedName, err = localizer.Localize(messageID, nil); err != nil {
 		return ""
 	}
 

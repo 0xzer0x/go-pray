@@ -12,21 +12,30 @@ import (
 	"github.com/0xzer0x/go-pray/internal/version"
 )
 
-type ShortFormatter struct{}
+type ShortFormatter struct {
+	localizer *i18n.Localizer
+}
 
-func (f *ShortFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
-	localizer, err := i18n.GetInstance()
-	if err != nil {
-		return "", fmt.Errorf("failed to instantiate localizer: %v", err)
+func NewShortFormatter() (*ShortFormatter, error) {
+	var err error
+	var localizer *i18n.Localizer
+	if localizer, err = i18n.GetInstance(); err != nil {
+		return nil, fmt.Errorf("failed to initialize localizer: %w", err)
 	}
 
-	localizedDate, err := localizer.Localize("date", nil)
+	sf := &ShortFormatter{
+		localizer,
+	}
+	return sf, nil
+}
+
+func (f *ShortFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
+	localizedDate, err := f.localizer.Localize("date", nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to localize: %v", err)
 	}
 
-	var dateHeader string
-	dateHeader = lipgloss.PlaceHorizontal(25, lipgloss.Center, fmt.Sprintf(
+	dateHeader := lipgloss.PlaceHorizontal(25, lipgloss.Center, fmt.Sprintf(
 		" %s: %s ",
 		localizedDate,
 		calendar.Fajr.Format(time.DateOnly),
@@ -48,7 +57,7 @@ func (f *ShortFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 		) + lipgloss.PlaceHorizontal(
 			8,
 			lipgloss.Right,
-			calendar.TimeForPrayer(prayer).Format(time.Kitchen),
+			f.localizer.LocalizeTime(calendar.TimeForPrayer(prayer), "03:04 PM"),
 		)
 		body += line + "\n"
 	}
@@ -57,21 +66,16 @@ func (f *ShortFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 }
 
 func (f *ShortFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
-	localizer, err := i18n.GetInstance()
-	if err != nil {
-		return "", fmt.Errorf("failed to instantiate localizer: %v", err)
-	}
-
 	prayTime := calendar.TimeForPrayer(prayer)
 	timeRemaining := time.Until(prayTime)
 
-	localizedNextPrayer, err := localizer.Localize("prayer-next", &map[string]any{
+	localizedNextPrayer, err := f.localizer.Localize("prayer-next", &map[string]any{
 		"CalendarName": common.CalendarName(calendar, prayer),
-		"Remaining": fmt.Sprintf(
+		"Remaining": f.localizer.LocalizeTimeString(fmt.Sprintf(
 			"%02d:%02d",
 			int(timeRemaining.Hours()),
 			int(timeRemaining.Minutes())%60,
-		),
+		)),
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed to localize message: %v", err)

@@ -40,7 +40,11 @@ func execNext(cmd *cobra.Command, args []string) {
 		util.ErrExit("failed to calculate next prayer time: %v", err)
 	}
 
-	formatter := formatter.New()
+	formatter, err := formatter.New()
+	if err != nil {
+		util.ErrExit("failed to create formatter: %v", err)
+	}
+
 	output, err := formatter.Prayer(prayerTimes, nextPrayer)
 	if err != nil {
 		util.ErrExit("%v", err)

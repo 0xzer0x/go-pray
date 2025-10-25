@@ -8,6 +8,7 @@ import (
 	"github.com/mnadev/adhango/pkg/calc"
 
 	"github.com/0xzer0x/go-pray/internal/common"
+	"github.com/0xzer0x/go-pray/internal/i18n"
 	"github.com/0xzer0x/go-pray/internal/version"
 )
 
@@ -22,28 +23,43 @@ type calendarInfo struct {
 	Prayers []prayerInfo `json:"prayers"`
 }
 
-type JsonFormatter struct{}
+type JSONFormatter struct {
+	localizer *i18n.Localizer
+}
 
-func newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
+func NewJSONFormatter() (*JSONFormatter, error) {
+	var err error
+	var localizer *i18n.Localizer
+	if localizer, err = i18n.GetInstance(); err != nil {
+		return nil, fmt.Errorf("failed to initialize localizer: %w", err)
+	}
+
+	jf := &JSONFormatter{
+		localizer,
+	}
+	return jf, nil
+}
+
+func (f *JSONFormatter) newPrayerInfo(calendar calc.PrayerTimes, prayer calc.Prayer) prayerInfo {
 	prayerTime := calendar.TimeForPrayer(prayer)
 	prayerInf := prayerInfo{
 		Name:      common.CalendarName(calendar, prayer),
-		Time:      prayerTime.Format(time.TimeOnly),
-		Remaining: time.Until(prayerTime).Truncate(time.Second).String(),
+		Time:      f.localizer.LocalizeTime(prayerTime, time.TimeOnly),
+		Remaining: f.localizer.LocalizeDuration(time.Until(prayerTime).Truncate(time.Second)),
 	}
 	return prayerInf
 }
 
-func (f *JsonFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
+func (f *JSONFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 	pt := calendarInfo{
-		Date: calendar.Fajr.Format(time.DateOnly),
+		Date: f.localizer.LocalizeTime(calendar.Fajr, time.DateOnly),
 		Prayers: []prayerInfo{
-			newPrayerInfo(calendar, calc.FAJR),
-			newPrayerInfo(calendar, calc.SUNRISE),
-			newPrayerInfo(calendar, calc.DHUHR),
-			newPrayerInfo(calendar, calc.ASR),
-			newPrayerInfo(calendar, calc.MAGHRIB),
-			newPrayerInfo(calendar, calc.ISHA),
+			f.newPrayerInfo(calendar, calc.FAJR),
+			f.newPrayerInfo(calendar, calc.SUNRISE),
+			f.newPrayerInfo(calendar, calc.DHUHR),
+			f.newPrayerInfo(calendar, calc.ASR),
+			f.newPrayerInfo(calendar, calc.MAGHRIB),
+			f.newPrayerInfo(calendar, calc.ISHA),
 		},
 	}
 
@@ -55,8 +71,8 @@ func (f *JsonFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
 	return fmt.Sprintf("%s\n", marshaled), nil
 }
 
-func (f *JsonFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
-	prayerInf := newPrayerInfo(calendar, prayer)
+func (f *JSONFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
+	prayerInf := f.newPrayerInfo(calendar, prayer)
 	marshaled, err := json.MarshalIndent(prayerInf, "", " ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal prayer info: %v", err)
@@ -64,7 +80,7 @@ func (f *JsonFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (s
 	return fmt.Sprintf("%s\n", marshaled), nil
 }
 
-func (f *JsonFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
+func (f *JSONFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
 	marshaled, err := json.MarshalIndent(versionInfo, "", " ")
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal version info: %v", err)

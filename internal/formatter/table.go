@@ -1,6 +1,8 @@
 package formatter
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -8,16 +10,32 @@ import (
 	"github.com/mnadev/adhango/pkg/calc"
 
 	"github.com/0xzer0x/go-pray/internal/common"
+	"github.com/0xzer0x/go-pray/internal/i18n"
 	"github.com/0xzer0x/go-pray/internal/version"
 )
 
-type TableFormatter struct{}
+type TableFormatter struct {
+	localizer *i18n.Localizer
+}
 
 var (
 	headerStyle lipgloss.Style  = lipgloss.NewStyle().Bold(true).Align(lipgloss.Center)
 	cellStyle   lipgloss.Style  = lipgloss.NewStyle().Padding(0, 2)
 	tableBorder lipgloss.Border = lipgloss.RoundedBorder()
 )
+
+func NewTableFormatter() (*TableFormatter, error) {
+	var err error
+	var localizer *i18n.Localizer
+	if localizer, err = i18n.GetInstance(); err != nil {
+		return nil, fmt.Errorf("failed to initialize localizer: %w", err)
+	}
+
+	tf := &TableFormatter{
+		localizer,
+	}
+	return tf, nil
+}
 
 func (f *TableFormatter) cellStyle(row, col int) lipgloss.Style {
 	switch row {
@@ -28,41 +46,62 @@ func (f *TableFormatter) cellStyle(row, col int) lipgloss.Style {
 	}
 }
 
-func (f *TableFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
+func (f *TableFormatter) newPrayersTable() (*table.Table, error) {
+	localizedHeaderMessageIDs := [...]string{"date", "prayer", "time", "remaining"}
+	localizedHeaders := make([]string, 0, 4)
+	for _, messageID := range localizedHeaderMessageIDs {
+		var err error
+		var header string
+		if header, err = f.localizer.Localize(messageID, nil); err != nil {
+			return nil, fmt.Errorf("failed to localize header: %w", err)
+		}
+		localizedHeaders = append(localizedHeaders, strings.ToUpper(header))
+	}
+
 	prayersTable := table.New().
 		Border(tableBorder).
 		StyleFunc(f.cellStyle).
-		Headers("DATE", "PRAYER", "TIME", "REMAINING")
+		Headers(localizedHeaders...)
+
+	return prayersTable, nil
+}
+
+func (f *TableFormatter) appendPrayerRow(tbl *table.Table, pname string, ptime time.Time) {
+	tbl.Row(
+		f.localizer.LocalizeTime(ptime, time.DateOnly),
+		pname,
+		f.localizer.LocalizeTime(ptime, "03:04 PM"),
+		f.localizer.LocalizeDuration(time.Until(ptime).Truncate(time.Second)),
+	)
+}
+
+func (f *TableFormatter) Calendar(calendar calc.PrayerTimes) (string, error) {
+	prayersTable, err := f.newPrayersTable()
+	if err != nil {
+		return "", err
+	}
 
 	for _, name := range []string{"fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"} {
 		prayer := common.Prayers[name]
-		pt := calendar.TimeForPrayer(prayer)
-		prayersTable.Row(
-			pt.Format(time.DateOnly),
-			common.CalendarName(calendar, prayer),
-			pt.Format("03:04PM"),
-			time.Until(pt).Truncate(time.Second).String(),
-		)
+		pname := common.CalendarName(calendar, prayer)
+		ptime := calendar.TimeForPrayer(prayer)
+		f.appendPrayerRow(prayersTable, pname, ptime)
 	}
 
 	return prayersTable.String() + "\n", nil
 }
 
 func (f *TableFormatter) Prayer(calendar calc.PrayerTimes, prayer calc.Prayer) (string, error) {
-	prayerTable := table.New().
-		Border(tableBorder).
-		StyleFunc(f.cellStyle).
-		Headers("DATE", "PRAYER", "TIME", "REMAINING")
+	prayersTable, err := f.newPrayersTable()
+	if err != nil {
+		return "", err
+	}
 
-	pt := calendar.TimeForPrayer(prayer)
-	prayerTable.Row(
-		pt.Format(time.DateOnly),
-		common.CalendarName(calendar, prayer),
-		pt.Format("03:04PM"),
-		time.Until(pt).Truncate(time.Second).String(),
-	)
+	pname := common.CalendarName(calendar, prayer)
+	ptime := calendar.TimeForPrayer(prayer)
+	f.appendPrayerRow(prayersTable, pname, ptime)
 
-	return prayerTable.String() + "\n", nil
+	return prayersTable.String() + "\n", nil
 }
 
 func (f *TableFormatter) VersionInfo(versionInfo version.VersionInfo) (string, error) {
