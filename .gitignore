@@ -1,3 +1,11 @@
-.envrc
+# NOTE: Build files
 build/
 dist/
+
+# NOTE: Devenv
+.envrc
+.devenv*
+devenv.local.nix
+devenv.local.yaml
+.direnv
+.pre-commit-config.yaml
