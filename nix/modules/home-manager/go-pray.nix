@@ -43,7 +43,7 @@ in {
     home.packages = [ cfg.package ];
 
     xdg.configFile."go-pray/config.yml" = mkIf (cfg.settings != { }) {
-      source = (yamlFormat.generate "go-pray-config.yml" cfg.settings);
+      source = yamlFormat.generate "go-pray-config.yml" cfg.settings;
     };
 
     # NOTE: Create systemd user unit to autostart daemon

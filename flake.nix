@@ -11,10 +11,10 @@
         (system: f { pkgs = nixpkgs.legacyPackages.${system}; });
     in {
       packages = forAllSystems
-        ({ pkgs }: { default = pkgs.callPackage ./pkgs/go-pray.nix { }; });
+        ({ pkgs }: { default = pkgs.callPackage ./nix/pkgs/go-pray.nix { }; });
 
       homeManagerModules = {
-        go-pray = ./modules/home-manager/go-pray.nix;
+        go-pray = ./nix/modules/home-manager/go-pray.nix;
         default = self.homeManagerModules.go-pray;
       };
     };
