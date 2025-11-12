@@ -12,7 +12,6 @@ in {
       package = mkOption {
         type = types.package;
         default = pkgs.callPackage ../../pkgs/go-pray.nix { };
-        defaultText = literalExpression "pkgs.go-pray";
         description = "Package providing {command}`go-pray`.";
       };
 

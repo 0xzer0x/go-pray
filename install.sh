@@ -218,7 +218,7 @@ _install_archlinux() {
 
 _install_nixos() {
   __prompt -w "Automated install for go-pray is not supported on NixOS :("
-  __prompt -w "Add the following nixpkg to your overlays: https://github.com/0xzer0x/infra/blob/main/pkgs/go-pray/default.nix"
+  __prompt -w "Refer to the installation guide for NixOS installation steps: https://github.com/0xzer0x/go-pray/wiki/Installation#nixos"
 }
 
 _install_generic() {
