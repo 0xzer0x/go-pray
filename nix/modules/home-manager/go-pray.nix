@@ -1,10 +1,16 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 with lib;
 let
   yamlFormat = pkgs.formats.yaml { };
   cfg = config.services.go-pray;
-in {
+in
+{
   options = {
     services.go-pray = {
       enable = mkEnableOption "Prayer times notification daemon";
@@ -54,15 +60,20 @@ in {
         PartOf = [ "graphical-session.target" ];
       };
 
-      Service = let configFile = "${config.xdg.configHome}/go-pray/config.yml";
-      in {
-        Type = "exec";
-        Environment = [ "PATH=${config.home.profileDirectory}/bin" ];
-        ExecCondition = [ "/bin/sh -c 'test -f ${configFile}'" ];
-        ExecStart = [ "${cfg.package}/bin/go-pray daemon" ];
-      };
+      Service =
+        let
+          configFile = "${config.xdg.configHome}/go-pray/config.yml";
+        in
+        {
+          Type = "exec";
+          Environment = [ "PATH=${config.home.profileDirectory}/bin" ];
+          ExecCondition = [ "/bin/sh -c 'test -f ${configFile}'" ];
+          ExecStart = [ "${cfg.package}/bin/go-pray daemon" ];
+        };
 
-      Install = { WantedBy = [ "graphical-session.target" ]; };
+      Install = {
+        WantedBy = [ "graphical-session.target" ];
+      };
     };
   };
 }

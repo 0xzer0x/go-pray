@@ -1,5 +1,12 @@
-{ lib, stdenv, buildGoModule, fetchFromGitHub, installShellFiles, pkg-config
-, alsa-lib, }:
+{
+  lib,
+  stdenv,
+  buildGoModule,
+  fetchFromGitHub,
+  installShellFiles,
+  pkg-config,
+  alsa-lib,
+}:
 
 buildGoModule (finalAttrs: {
   pname = "go-pray";
@@ -14,7 +21,10 @@ buildGoModule (finalAttrs: {
 
   vendorHash = "sha256-qMTg2Vsk0nte1O8sbNWN5CCCpgpWLvcb2RuGMoEngYE=";
 
-  nativeBuildInputs = [ pkg-config installShellFiles ];
+  nativeBuildInputs = [
+    pkg-config
+    installShellFiles
+  ];
 
   buildInputs = [ alsa-lib ];
 
@@ -24,22 +34,20 @@ buildGoModule (finalAttrs: {
   ];
 
   # NOTE: Create temporary config file to supress missing config error
-  postInstall =
-    lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
-      GOPRAY_TMPCONF="$(mktemp --suffix=.yml)"
-      printf 'calculation: { method: "UAQ" }\nlocation: { lat: 0, long: 0 }\n' >"''${GOPRAY_TMPCONF}"
-      installShellCompletion --cmd go-pray \
-        --bash <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion bash) \
-        --fish <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion fish) \
-        --zsh <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion zsh)
-      rm "''${GOPRAY_TMPCONF}"
-    '';
+  postInstall = lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    GOPRAY_TMPCONF="$(mktemp --suffix=.yml)"
+    printf 'calculation: { method: "UAQ" }\nlocation: { lat: 0, long: 0 }\n' >"''${GOPRAY_TMPCONF}"
+    installShellCompletion --cmd go-pray \
+      --bash <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion bash) \
+      --fish <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion fish) \
+      --zsh <($out/bin/go-pray --config="''${GOPRAY_TMPCONF}" completion zsh)
+    rm "''${GOPRAY_TMPCONF}"
+  '';
 
   meta = {
     description = "Prayer times CLI to remind you to Go pray";
     homepage = "https://github.com/0xzer0x/go-pray";
-    changelog =
-      "https://github.com/0xzer0x/go-pray/releases/tag/v${finalAttrs.version}";
+    changelog = "https://github.com/0xzer0x/go-pray/releases/tag/v${finalAttrs.version}";
     license = lib.licenses.gpl3Plus;
     maintainers = with lib.maintainers; [ _0xzer0x ];
     platforms = lib.platforms.linux;

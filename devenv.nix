@@ -1,8 +1,19 @@
-{ pkgs, lib, config, inputs, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  inputs,
+  ...
+}:
 
 {
   # https://devenv.sh/packages/
-  packages = with pkgs; [ go-task gcc pkg-config alsa-lib.dev ];
+  packages = with pkgs; [
+    go-task
+    gcc
+    pkg-config
+    alsa-lib.dev
+  ];
 
   # https://devenv.sh/languages/
   languages.go.enable = true;
@@ -18,7 +29,17 @@
       exec = ''
         ${pkgs.go-task}/bin/task build
       '';
-      execIfModified = [ "cmd" "internal" "main.go" "go.mod" "go.sum" ];
+      execIfModified = [
+        "cmd"
+        "internal"
+        "main.go"
+        "go.mod"
+        "go.sum"
+      ];
     };
+  };
+
+  git-hooks.hooks = {
+    nixfmt.enable = true;
   };
 }
